@@ -83,3 +83,16 @@ crashlytics-build.properties
 /[Aa]ssets/Unity.VisualScripting.Generated/VisualScripting.Flow/UnitOptions.db.meta
 /[Aa]ssets/Unity.VisualScripting.Generated/VisualScripting.Core/Property Providers
 /[Aa]ssets/Unity.VisualScripting.Generated/VisualScripting.Core/Property Providers.meta
+
+UABSCache
+Library
+Logs
+Temp
+UserSettings
+MemoryCaptures
+Obj
+Build
+
+Packages/*
+!Packages/manifest.json
+!Packages/packages-lock.json
