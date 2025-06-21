@@ -1,13 +1,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 namespace UABS.Assets.Script.View
 {
     public class TextureView : MonoBehaviour
     {
         [SerializeField]
-        private RawImage _rawImage; // Drag a UI RawImage from the scene into the Inspector
+        private RawImage _rawImage;
+        [SerializeField]
+        private TextMeshProUGUI _indexText;
+
         private List<Texture2D> _textures = new();
         private int _index;
 
@@ -20,6 +24,7 @@ namespace UABS.Assets.Script.View
                 if (_index >= 0 && _index < _textures.Count)
                 {
                     AssignTextureToImage(_textures[_index]);
+                    _indexText.text = $"{_index+1}/{_textures.Count}";
                 }
             }
         }
