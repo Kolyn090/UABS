@@ -40,6 +40,7 @@ namespace UABS.Assets.Script.Reader
 
                     Texture2D texture = new(width, height, TextureFormat.RGBA32, false);
                     texture.LoadRawTextureData(rgbaBytes);
+                    texture.filterMode = FilterMode.Point;
                     texture.Apply();
 
                     // Now you can assign tex to a material or use it however you need
@@ -51,6 +52,7 @@ namespace UABS.Assets.Script.Reader
                     TextureFormat unityFormat = TextureFormat.RGBA32;
                     Texture2D texture = new(width, height, unityFormat, false);
                     texture.LoadRawTextureData(imageBytes);
+                    texture.filterMode = FilterMode.Point;
                     texture.Apply();
                     result.Add(PadToSquare(texture));
                 }

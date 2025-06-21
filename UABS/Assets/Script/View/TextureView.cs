@@ -38,6 +38,7 @@ namespace UABS.Assets.Script.View
         private void AssignTextureToImage(Texture2D texture)
         {
             _rawImage.texture = texture;
+            texture.filterMode = FilterMode.Point;
             // _rawImage.SetNativeSize();
         }
 
