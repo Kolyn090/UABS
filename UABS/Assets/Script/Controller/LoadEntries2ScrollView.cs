@@ -22,7 +22,7 @@ namespace UABS.Assets.Script.Controller
 
         private void Start()
         {
-            List<AssetBasicInfo> spriteBasicInfos = ReadBasicInfoFromBundle.ReadSpritesBasicInfo(TestBundlePath);
+            List<AssetBasicInfo> spriteBasicInfos = ReadBasicInfoFromBundle.ReadAllBasicInfo(TestBundlePath);
             ClearAndLoadBundle(spriteBasicInfos);
         }
 
