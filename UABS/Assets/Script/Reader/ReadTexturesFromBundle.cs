@@ -8,11 +8,229 @@ using BCnEncoder.Decoder;
 using BCnEncoder.Shared;
 using CommunityToolkit.HighPerformance;
 using System.Runtime.InteropServices;
+using System.Text;
+using static UABS.Assets.Script.Reader.DumpReader;
+using static UABS.Assets.Script.Reader.AtlasDumpProcessor;
+using UnityEditor.AssetImporters;
 
 namespace UABS.Assets.Script.Reader
 {
     public class ReadTexturesFromBundle
     {
+        public struct AssetExternal
+        {
+            public AssetsFileInstance file;
+            public AssetFileInfo info;
+            public AssetTypeValueField instance;
+        }
+
+        public static List<Texture2D> ReadSpritesInAtlas(string bundlePath)
+        {
+            AtlasDumpProcessor? GetAtlasDumpProcessorForSpriteDump(DumpInfo spriteDump,
+                                                                    List<AtlasDumpProcessor> atlasDumpProcessors)
+            {
+                foreach (AtlasDumpProcessor atlasDumpProcessor in atlasDumpProcessors)
+                {
+                    if (atlasDumpProcessor.spriteDumpInfos.Contains(spriteDump))
+                    {
+                        return atlasDumpProcessor;
+                    }
+                }
+                return null;
+            }
+
+            List<Texture2D> result = new();
+            AssetsManager am = new();
+            BundleFileInstance bunInst = am.LoadBundleFile(bundlePath, true);
+            AssetsFileInstance fileInst = am.LoadAssetsFileFromBundle(bunInst, 0, false);
+
+            List<AssetFileInfo> spriteInfos = fileInst.file.GetAssetsOfType(AssetClassID.Sprite);
+
+            List<DumpInfo> atlasDumps = ReadSpriteAtlasDumps(bundlePath);
+            List<DumpInfo> spriteDumps = ReadSpriteDumps(bundlePath);
+            List<AtlasDumpProcessor> atlasDumpProcessors = DistributeProcessors(atlasDumps, spriteDumps);
+
+            // foreach (JObject obj in atlasDumps)
+            // {
+            //     Debug.Log(obj.ToString(Newtonsoft.Json.Formatting.Indented));
+            // }
+
+            if (spriteInfos.Count == 0)
+                return result;
+
+            for (int i = 0; i < spriteInfos.Count; i++)
+            {
+                DumpInfo spriteDump = spriteDumps[i];
+                AtlasDumpProcessor? _atlasDumpInfoForSprite = GetAtlasDumpProcessorForSpriteDump(spriteDump, atlasDumpProcessors);
+                if (_atlasDumpInfoForSprite != null) // Has Atlas
+                {
+                    AtlasDumpProcessor atlasDumpInfoForSprite = (AtlasDumpProcessor)_atlasDumpInfoForSprite;
+                    Dictionary<int, int> index2RenderDataKey = atlasDumpInfoForSprite.GetIndex2ActualRenderDataKeyIndex();
+                    AssetTypeValueField spriteBase = am.GetBaseField(fileInst, spriteInfos[i]);
+                    AssetTypeValueField atlasRefField = spriteBase["m_SpriteAtlas"];
+                    AssetExternal atlasAsset = GetExternalAsset(am, fileInst, bunInst, atlasRefField);
+                    AssetTypeValueField atlasBase = am.GetBaseField(atlasAsset.file, atlasAsset.info);
+                    AssetTypeValueField renderDataMap = atlasBase["m_RenderDataMap"];
+                    AssetTypeValueField dataArray = renderDataMap["Array"][index2RenderDataKey[i]]; // The true index in dict
+                    AssetTypeValueField firstEntry = dataArray["second"];
+                    AssetTypeValueField texturePtr = firstEntry["texture"];
+                    AssetExternal texAsset = GetExternalAsset(am, fileInst, bunInst, texturePtr);
+                    AssetTypeValueField texBase = am.GetBaseField(atlasAsset.file, texAsset.info);
+
+                    Rect spriteRect = atlasDumpInfoForSprite.GetRectAtActualIndex(index2RenderDataKey[i]);
+
+                    int textureWidth = texBase["m_Width"].AsInt;
+                    int textureHeight = texBase["m_Height"].AsInt;
+                    int textureFormat = texBase["m_TextureFormat"].AsInt;
+                    byte[] imageBytes = GetImageData(texBase, fileInst, bunInst);
+
+                    if (IsSupportedBCnFormat((TextureFormat)textureFormat, out CompressionFormat bcnFormat))
+                    {
+                        var decoder = new BcDecoder();
+                        ColorRgba32[] decoded = decoder.DecodeRaw(imageBytes, textureWidth, textureHeight, CompressionFormat.Bc7);
+
+                        byte[] rgbaBytes = new byte[decoded.Length * 4];
+                        MemoryMarshal.Cast<ColorRgba32, byte>(decoded.AsSpan()).CopyTo(rgbaBytes);
+
+                        Texture2D texture = new(textureWidth, textureHeight, TextureFormat.RGBA32, false);
+                        texture.LoadRawTextureData(rgbaBytes);
+                        texture.filterMode = FilterMode.Point;
+                        texture.Apply();
+
+                        // Now you can assign tex to a material or use it however you need
+                        // Debug.Log($"Decoded BC7 texture: {width}x{height}");
+                        texture = CropTexture(texture, spriteRect);
+                        result.Add(PadToSquare(texture));
+                    }
+                    else if (imageBytes.Length == textureWidth * textureHeight * textureFormat)
+                    {
+                        TextureFormat unityFormat = TextureFormat.RGBA32;
+                        Texture2D texture = new(textureWidth, textureHeight, unityFormat, false);
+                        texture.LoadRawTextureData(imageBytes);
+                        texture.filterMode = FilterMode.Point;
+                        texture.Apply();
+                        texture = CropTexture(texture, spriteRect);
+                        result.Add(PadToSquare(texture));
+                    }
+                    else
+                    {
+                        Debug.LogError($"Expected {textureWidth * textureHeight * textureFormat} bytes, got {imageBytes.Length}");
+                    }
+                }
+                else // No Atlas
+                {
+                    AssetTypeValueField spriteBase = am.GetBaseField(fileInst, spriteInfos[i]);
+                    Rect spriteRect = new(
+                        spriteBase["m_Rect"]["x"].AsFloat,
+                        spriteBase["m_Rect"]["y"].AsFloat,
+                        spriteBase["m_Rect"]["width"].AsFloat,
+                        spriteBase["m_Rect"]["height"].AsFloat
+                    );
+                    AssetTypeValueField texRefField = spriteBase["m_RD"]["texture"];
+                    AssetExternal texAsset = GetExternalAsset(am, fileInst, bunInst, texRefField);
+                    AssetTypeValueField texBase = am.GetBaseField(texAsset.file, texAsset.info);
+
+                    int textureWidth = texBase["m_Width"].AsInt;
+                    int textureHeight = texBase["m_Height"].AsInt;
+                    int textureFormat = texBase["m_TextureFormat"].AsInt;
+                    byte[] imageBytes = GetImageData(texBase, fileInst, bunInst);
+
+                    if (IsSupportedBCnFormat((TextureFormat)textureFormat, out CompressionFormat bcnFormat))
+                    {
+                        var decoder = new BcDecoder();
+                        ColorRgba32[] decoded = decoder.DecodeRaw(imageBytes, textureWidth, textureHeight, CompressionFormat.Bc7);
+
+                        byte[] rgbaBytes = new byte[decoded.Length * 4];
+                        MemoryMarshal.Cast<ColorRgba32, byte>(decoded.AsSpan()).CopyTo(rgbaBytes);
+
+                        Texture2D texture = new(textureWidth, textureHeight, TextureFormat.RGBA32, false);
+                        texture.LoadRawTextureData(rgbaBytes);
+                        texture.filterMode = FilterMode.Point;
+                        texture.Apply();
+
+                        // Now you can assign tex to a material or use it however you need
+                        // Debug.Log($"Decoded BC7 texture: {width}x{height}");
+                        texture = CropTexture(texture, spriteRect);
+                        result.Add(PadToSquare(texture));
+                    }
+                    else if (imageBytes.Length == textureWidth * textureHeight * textureFormat)
+                    {
+                        TextureFormat unityFormat = TextureFormat.RGBA32;
+                        Texture2D texture = new(textureWidth, textureHeight, unityFormat, false);
+                        texture.LoadRawTextureData(imageBytes);
+                        texture.filterMode = FilterMode.Point;
+                        texture.Apply();
+                        texture = CropTexture(texture, spriteRect);
+                        result.Add(PadToSquare(texture));
+                    }
+                    else
+                    {
+                        Debug.LogError($"Expected {textureWidth * textureHeight * textureFormat} bytes, got {imageBytes.Length}");
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private static Texture2D CropTexture(Texture2D source, Rect rect)
+        {
+            int x = Mathf.FloorToInt(rect.x);
+            int y = Mathf.FloorToInt(rect.y);
+            int width = Mathf.FloorToInt(rect.width);
+            int height = Mathf.FloorToInt(rect.height);
+
+            // Clamp to source texture bounds
+            x = Mathf.Clamp(x, 0, source.width - 1);
+            y = Mathf.Clamp(y, 0, source.height - 1);
+            width = Mathf.Clamp(width, 1, source.width - x);
+            height = Mathf.Clamp(height, 1, source.height - y);
+
+            // Get pixels from the specified rect
+            Color[] pixels = source.GetPixels(x, y, width, height);
+
+            // Create new texture and apply pixels
+            Texture2D cropped = new Texture2D(width, height, source.format, false);
+            cropped.SetPixels(pixels);
+            cropped.Apply();
+
+            return cropped;
+        }
+
+        public static string GetAssetTypeValueFieldString(AssetTypeValueField field, int indentLevel = 0)
+        {
+            if (field == null) return "<null>";
+
+            StringBuilder sb = new StringBuilder();
+            string indent = new string(' ', indentLevel * 2);
+
+            // Field name and type
+            sb.Append(indent);
+            sb.Append(field.FieldName);
+            sb.Append(" (");
+            sb.Append(field.TypeName);
+            sb.Append(")");
+
+            // Field value (if any)
+            if (field.Value != null)
+            {
+                sb.Append(" : ");
+                sb.Append(field.Value);
+            }
+            sb.AppendLine();
+
+            // Recursively append children
+            if (field.Children != null)
+            {
+                foreach (var child in field.Children)
+                {
+                    sb.Append(GetAssetTypeValueFieldString(child, indentLevel + 1));
+                }
+            }
+
+            return sb.ToString();
+        }
+
         public static List<Texture2D> ReadTextures(string bundlePath)
         {
             List<Texture2D> result = new();
@@ -155,37 +373,6 @@ namespace UABS.Assets.Script.Reader
             throw new FileNotFoundException($"File '{internalFileName}' not found in bundle '{bundle.path}'");
         }
 
-        public static Texture2D DecodeWithBCn(byte[] bc7Data, int width, int height)
-        {
-            var decoder = new BcDecoder();
-
-            // Decode BC7 raw bytes to ColorRgba32[] array
-            ColorRgba32[] decodedPixels = decoder.DecodeRaw(bc7Data, width, height, CompressionFormat.Bc7);
-
-            // Convert ColorRgba32[] to byte[] for Texture2D
-            byte[] rawBytes = ColorRgba32ArrayToByteArray(decodedPixels);
-
-            // Create Texture2D with RGBA32 format and load raw pixel data
-            Texture2D tex = new Texture2D(width, height, TextureFormat.RGBA32, false);
-            tex.LoadRawTextureData(rawBytes);
-            tex.Apply();
-
-            return tex;
-        }
-
-        // Helper method to convert ColorRgba32[] to byte[]
-        private static byte[] ColorRgba32ArrayToByteArray(ColorRgba32[] pixels)
-        {
-            int length = pixels.Length * 4; // 4 bytes per pixel
-            byte[] bytes = new byte[length];
-
-            // Use MemoryMarshal to reinterpret the ColorRgba32 array as bytes
-            Span<ColorRgba32> pixelSpan = pixels.AsSpan();
-            MemoryMarshal.Cast<ColorRgba32, byte>(pixelSpan).CopyTo(bytes);
-
-            return bytes;
-        }
-
         private static bool IsSupportedBCnFormat(TextureFormat unityFormat, out CompressionFormat format)
         {
             switch (unityFormat)
@@ -224,6 +411,36 @@ namespace UABS.Assets.Script.Reader
 
             square.Apply();
             return square;
+        }
+
+
+
+        private static AssetExternal GetExternalAsset(AssetsManager am, AssetsFileInstance currentFile, BundleFileInstance bundleFile, AssetTypeValueField pptr)
+        {
+            int fileId = pptr["m_FileID"].AsInt;
+            long pathId = pptr["m_PathID"].AsLong;
+
+            AssetsFileInstance targetFile = (fileId == 0)
+                ? currentFile
+                : am.LoadAssetsFileFromBundle(bundleFile, fileId, false);  // use fileId as index
+
+            AssetFileInfo targetInfo = targetFile.file.GetAssetInfo(pathId);
+            if (targetFile == null)
+            throw new Exception("targetFile is null. Failed to resolve fileId.");
+
+            if (targetInfo == null)
+                throw new Exception($"Asset with pathId {pathId} not found in file.");
+
+            var baseField = am.GetBaseField(targetFile, targetInfo);
+            if (baseField == null)
+                throw new Exception("GetBaseField returned null.");
+            
+            return new AssetExternal
+            {
+                file = targetFile,
+                info = targetInfo,
+                instance = am.GetBaseField(targetFile, targetInfo)
+            };
         }
     }
 }

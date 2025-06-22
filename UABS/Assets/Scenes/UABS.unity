@@ -1211,7 +1211,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 419645436}
   m_HandleRect: {fileID: 419645435}
   m_Direction: 0
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -2439,8 +2439,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -315}
-  m_SizeDelta: {x: 100, y: 35}
+  m_AnchoredPosition: {x: 16.88, y: -315}
+  m_SizeDelta: {x: 133.76, y: 35}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &840772544
 MonoBehaviour:
@@ -2525,7 +2525,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: -31.167664, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -5470,6 +5470,7 @@ GameObject:
   - component: {fileID: 1781831266}
   - component: {fileID: 1781831265}
   - component: {fileID: 1781831264}
+  - component: {fileID: 1781831267}
   m_Layer: 5
   m_Name: Button_Next
   m_TagString: Untagged
@@ -5495,7 +5496,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 122.9, y: -367.4}
+  m_AnchoredPosition: {x: 173.1, y: -367.5}
   m_SizeDelta: {x: 70, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1781831264
@@ -5541,19 +5542,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1781831265}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 538596073}
-        m_TargetAssemblyTypeName: UABS.Assets.Script.View.TextureView, Assembly-CSharp
-        m_MethodName: Next
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1781831265
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5592,6 +5581,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1781831262}
   m_CullTransparentMesh: 1
+--- !u!114 &1781831267
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1781831262}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc2c6495192062a4ca22e3f27f525b63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  triggeringDelay: 2
+  repeatRate: 0.2
+  onLongPress:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 538596073}
+        m_TargetAssemblyTypeName: UABS.Assets.Script.View.TextureView, Assembly-CSharp
+        m_MethodName: Next
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onClick:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 538596073}
+        m_TargetAssemblyTypeName: UABS.Assets.Script.View.TextureView, Assembly-CSharp
+        m_MethodName: Next
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1811743465
 GameObject:
   m_ObjectHideFlags: 0
@@ -5688,6 +5721,7 @@ GameObject:
   - component: {fileID: 1859305225}
   - component: {fileID: 1859305224}
   - component: {fileID: 1859305223}
+  - component: {fileID: 1859305226}
   m_Layer: 5
   m_Name: Button_Prev
   m_TagString: Untagged
@@ -5713,7 +5747,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: -24.39, y: -368}
+  m_AnchoredPosition: {x: -72, y: -367.4}
   m_SizeDelta: {x: 70, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1859305223
@@ -5759,19 +5793,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1859305224}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 538596073}
-        m_TargetAssemblyTypeName: UABS.Assets.Script.View.TextureView, Assembly-CSharp
-        m_MethodName: Prev
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1859305224
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5810,6 +5832,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1859305221}
   m_CullTransparentMesh: 1
+--- !u!114 &1859305226
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1859305221}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc2c6495192062a4ca22e3f27f525b63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  triggeringDelay: 2
+  repeatRate: 0.2
+  onLongPress:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 538596073}
+        m_TargetAssemblyTypeName: UABS.Assets.Script.View.TextureView, Assembly-CSharp
+        m_MethodName: Prev
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onClick:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 538596073}
+        m_TargetAssemblyTypeName: UABS.Assets.Script.View.TextureView, Assembly-CSharp
+        m_MethodName: Prev
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!224 &1987218700 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5549703812610441635, guid: 03f6c3468ef018443913f3e3ded6e0cd, type: 3}
