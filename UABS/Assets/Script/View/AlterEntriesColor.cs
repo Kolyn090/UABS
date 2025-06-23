@@ -8,6 +8,8 @@ namespace UABS.Assets.Script.View
     {
         [SerializeField]
         private Color _alternateColor;
+        [SerializeField]
+        private GameObject _context;
 
         private void Start()
         {
@@ -17,7 +19,7 @@ namespace UABS.Assets.Script.View
         private void AlterChildrenColorIfImage()
         {
             int counter = 0;
-            foreach (Transform child in transform)
+            foreach (Transform child in _context.transform)
             {
                 if (child.TryGetComponent<UnityEngine.UI.Image>(out var image))
                 {
