@@ -11,6 +11,8 @@ namespace UABS.Assets.Script.View
         private RawImage _rawImage;
         [SerializeField]
         private TextMeshProUGUI _indexText;
+        [SerializeField]
+        private TextMeshProUGUI _sizeText;
         public EventDispatcher dispatcher;
 
         public void Render(Texture2D texture)
@@ -22,6 +24,11 @@ namespace UABS.Assets.Script.View
         public void AssignIndexText(string text)
         {
             _indexText.text = text;
+        }
+
+        public void AssignSizeText(string text)
+        {
+            _sizeText.text = text;
         }
     }
 }

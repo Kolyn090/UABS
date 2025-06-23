@@ -11,6 +11,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using static UABS.Assets.Script.Reader.DumpReader;
 using static UABS.Assets.Script.Reader.AtlasDumpProcessor;
+using UABS.Assets.Script.DataStruct;
 
 namespace UABS.Assets.Script.Reader
 {
@@ -45,7 +46,7 @@ namespace UABS.Assets.Script.Reader
             _dumpReader = new(AssetsManager);
         }
 
-        public Texture2D ReadSpriteByPathID(BundleFileInstance bunInst, long pathID)
+        public Texture2DWithMeta? ReadSpriteByPathID(BundleFileInstance bunInst, long pathID)
         {
             AtlasDumpProcessor? GetAtlasDumpProcessorForSpriteDump(DumpInfo spriteDump)
             {
@@ -136,7 +137,12 @@ namespace UABS.Assets.Script.Reader
                     // Now you can assign tex to a material or use it however you need
                     // Debug.Log($"Decoded BC7 texture: {width}x{height}");
                     texture = CropTexture(texture, spriteRect);
-                    return PadToSquare(texture);
+                    return new()
+                    {
+                        texture2D = PadToSquare(texture),
+                        rect = spriteRect,
+                        compressionFormat = (TextureFormat)textureFormat
+                    };
                 }
                 else if (imageBytes.Length == textureWidth * textureHeight * textureFormat)
                 {
@@ -146,7 +152,12 @@ namespace UABS.Assets.Script.Reader
                     texture.filterMode = FilterMode.Point;
                     texture.Apply();
                     texture = CropTexture(texture, spriteRect);
-                    return PadToSquare(texture);
+                    return new()
+                    {
+                        texture2D = PadToSquare(texture),
+                        rect = spriteRect,
+                        compressionFormat = (TextureFormat)textureFormat
+                    };
                 }
                 else
                 {
@@ -187,7 +198,12 @@ namespace UABS.Assets.Script.Reader
                     // Now you can assign tex to a material or use it however you need
                     // Debug.Log($"Decoded BC7 texture: {width}x{height}");
                     texture = CropTexture(texture, spriteRect);
-                    return PadToSquare(texture);
+                    return new()
+                    {
+                        texture2D = PadToSquare(texture),
+                        rect = spriteRect,
+                        compressionFormat = (TextureFormat)textureFormat
+                    };
                 }
                 else if (imageBytes.Length == textureWidth * textureHeight * textureFormat)
                 {
@@ -197,7 +213,12 @@ namespace UABS.Assets.Script.Reader
                     texture.filterMode = FilterMode.Point;
                     texture.Apply();
                     texture = CropTexture(texture, spriteRect);
-                    return PadToSquare(texture);
+                    return new()
+                    {
+                        texture2D = PadToSquare(texture),
+                        rect = spriteRect,
+                        compressionFormat = (TextureFormat)textureFormat
+                    };
                 }
                 else
                 {
@@ -208,7 +229,7 @@ namespace UABS.Assets.Script.Reader
             return null;
         }
 
-        public Texture2D ReadTexture2DByPathID(BundleFileInstance bunInst, long pathID)
+        public Texture2DWithMeta? ReadTexture2DByPathID(BundleFileInstance bunInst, long pathID)
         {
             int GetIndexInAssets()
             {
@@ -259,7 +280,12 @@ namespace UABS.Assets.Script.Reader
 
                 // Now you can assign tex to a material or use it however you need
                 // Debug.Log($"Decoded BC7 texture: {width}x{height}");
-                return PadToSquare(texture);
+                return new()
+                {
+                    texture2D = PadToSquare(texture),
+                    rect = new(0, 0, width, height),
+                    compressionFormat = (TextureFormat)format
+                };
             }
             else if (imageBytes.Length == width * height * format)
             {
@@ -268,7 +294,12 @@ namespace UABS.Assets.Script.Reader
                 texture.LoadRawTextureData(imageBytes);
                 texture.filterMode = FilterMode.Point;
                 texture.Apply();
-                return PadToSquare(texture);
+                return new()
+                {
+                    texture2D = PadToSquare(texture),
+                    rect = new(0, 0, width, height),
+                    compressionFormat = (TextureFormat)format
+                };
             }
             else
             {

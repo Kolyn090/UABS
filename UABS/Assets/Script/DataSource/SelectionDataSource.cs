@@ -21,7 +21,7 @@ namespace UABS.Assets.Script.DataSource
 
         public void OnEvent(AppEvent e)
         {
-            if (e is PathIDEvent pie)
+            if (e is SelectionEvent pie)
             {
                 _lastPathID = pie.PathID;
             }
@@ -34,13 +34,13 @@ namespace UABS.Assets.Script.DataSource
         public void Prev()
         {
             int index = StayInRange(FindIndexOfLastPathID() - 1);
-            AppEnvironment.Dispatcher.Dispatch(new PathIDEvent(_currBunPathIDs[index], index, _currBunPathIDs.Count));
+            AppEnvironment.Dispatcher.Dispatch(new SelectionEvent(_currBunPathIDs[index], index, _currBunPathIDs.Count, true));
         }
 
         public void Next()
         {
             int index = StayInRange(FindIndexOfLastPathID() + 1);
-            AppEnvironment.Dispatcher.Dispatch(new PathIDEvent(_currBunPathIDs[index], index, _currBunPathIDs.Count));
+            AppEnvironment.Dispatcher.Dispatch(new SelectionEvent(_currBunPathIDs[index], index, _currBunPathIDs.Count, true));
         }
 
         private int FindIndexOfLastPathID()

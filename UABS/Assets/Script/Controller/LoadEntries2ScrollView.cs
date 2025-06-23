@@ -5,6 +5,7 @@ using UABS.Assets.Script.View;
 using UABS.Assets.Script.EventListener;
 using UABS.Assets.Script.Event;
 using System.Linq;
+using UnityEngine.UI;
 
 
 namespace UABS.Assets.Script.Controller
@@ -13,6 +14,9 @@ namespace UABS.Assets.Script.Controller
     {
         [SerializeField]
         private GameObject _content;
+
+        [SerializeField]
+        private Scrollbar _scrollbarRef;
 
         [SerializeField]
         private GameObject _entryPrefab;
@@ -50,7 +54,8 @@ namespace UABS.Assets.Script.Controller
                 EntryInfoView entryInfoView = _currEntryInfoViews[i];
                 entryInfoView.dispatcher = _appEnvironment.Dispatcher;
                 _appEnvironment.Dispatcher.Register(entryInfoView);
-                entryInfoView.Render(assetTextInfo, i, assetTextInfos.Count);
+                entryInfoView.AssignStuff(i, assetTextInfos.Count, _scrollbarRef);
+                entryInfoView.Render(assetTextInfo);
             }
         }
 

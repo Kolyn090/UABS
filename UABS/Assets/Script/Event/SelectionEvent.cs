@@ -1,6 +1,6 @@
 namespace UABS.Assets.Script.Event
 {
-    public class PathIDEvent : AppEvent // On focus item's path id. (Only applicable in AssetBundle view)
+    public class SelectionEvent : AppEvent // On focus item's path id. (Only applicable in AssetBundle view)
     {
         public long PathID { get; }
 
@@ -8,11 +8,14 @@ namespace UABS.Assets.Script.Event
 
         public int TotalNumOfAssets { get; }
 
-        public PathIDEvent(long pathID, int currIndex = 0, int totalNumOfAssets = 0)
+        public bool UseJump { get; }
+
+        public SelectionEvent(long pathID, int currIndex = 0, int totalNumOfAssets = 0, bool useJump = false)
         {
             PathID = pathID;
             CurrIndex = currIndex;
             TotalNumOfAssets = totalNumOfAssets;
+            UseJump = useJump;
         }
     }
 }
