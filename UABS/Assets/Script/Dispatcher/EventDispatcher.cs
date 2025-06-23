@@ -11,7 +11,9 @@ namespace UABS.Assets.Script.Dispatcher
 
         public void Dispatch(AppEvent e)
         {
-            foreach (var listener in _listeners)
+            var snapshot = _listeners.ToArray();
+
+            foreach (var listener in snapshot)
             {
                 listener.OnEvent(e);
             }

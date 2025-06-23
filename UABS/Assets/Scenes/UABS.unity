@@ -993,6 +993,7 @@ GameObject:
   m_Component:
   - component: {fileID: 404023905}
   - component: {fileID: 404023906}
+  - component: {fileID: 404023907}
   m_Layer: 0
   m_Name: DataSource
   m_TagString: Untagged
@@ -1025,6 +1026,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6b8d7c670667e2945ba3d78c600a94e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &404023907
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 404023904}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 685905aff0021b5428b42d77988f4b26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &419645434
@@ -1288,7 +1301,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 419645436}
   m_HandleRect: {fileID: 419645435}
   m_Direction: 0
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -1793,7 +1806,6 @@ GameObject:
   m_Component:
   - component: {fileID: 661445326}
   - component: {fileID: 661445327}
-  - component: {fileID: 661445328}
   m_Layer: 0
   m_Name: ScrollView
   m_TagString: Untagged
@@ -1830,20 +1842,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _content: {fileID: 1477773592}
   _entryPrefab: {fileID: 5549703812610441636, guid: 03f6c3468ef018443913f3e3ded6e0cd, type: 3}
---- !u!114 &661445328
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 661445325}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cc6108277fdf25144a9eb77fafbf3bd7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _alternateColor: {r: 0.93342096, g: 1, b: 0.9009434, a: 1}
-  _context: {fileID: 1477773592}
 --- !u!1 &717468805
 GameObject:
   m_ObjectHideFlags: 0
@@ -5683,8 +5681,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 538596073}
-        m_TargetAssemblyTypeName: UABS.Assets.Script.View.TextureView, Assembly-CSharp
+      - m_Target: {fileID: 404023907}
+        m_TargetAssemblyTypeName: UABS.Assets.Script.DataSource.SelectionDataSource,
+          Assembly-CSharp
         m_MethodName: Next
         m_Mode: 1
         m_Arguments:
@@ -5946,8 +5945,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 538596073}
-        m_TargetAssemblyTypeName: UABS.Assets.Script.View.TextureView, Assembly-CSharp
+      - m_Target: {fileID: 404023907}
+        m_TargetAssemblyTypeName: UABS.Assets.Script.DataSource.SelectionDataSource,
+          Assembly-CSharp
         m_MethodName: Prev
         m_Mode: 1
         m_Arguments:

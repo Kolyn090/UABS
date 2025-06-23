@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UABS.Assets.Script.Dispatcher;
-using UABS.Assets.Script.Event;
 
 namespace UABS.Assets.Script.View
 {
@@ -23,30 +22,6 @@ namespace UABS.Assets.Script.View
         public void AssignIndexText(string text)
         {
             _indexText.text = text;
-        }
-
-        public void Prev()
-        {
-            if (dispatcher != null)
-            {
-                dispatcher.Dispatch(new TexturePrevEvent());
-            }
-            else
-            {
-                throw new System.Exception("Texture view missing dispatcher. Please assign first.");
-            }
-        }
-
-        public void Next()
-        {
-            if (dispatcher != null)
-            {
-                dispatcher.Dispatch(new TextureNextEvent());
-            }
-            else
-            {
-                throw new System.Exception("Texture view missing dispatcher. Please assign first.");
-            }
         }
     }
 }

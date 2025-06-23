@@ -15,7 +15,7 @@ namespace UABS.Assets.Script.Controller
         private TextureView _textureView;
         private ReadTexturesFromBundle _readTexturesFromBundle;
         private BundleFileInstance _currBunInst;
-        private Dictionary<long, Texture2D> _cacheTextureByPathID;
+        private Dictionary<long, Texture2D> _cacheTextureByPathID = new();
 
         private AppEnvironment _appEnvironment = null;
         public AppEnvironment AppEnvironment => _appEnvironment;
@@ -37,6 +37,7 @@ namespace UABS.Assets.Script.Controller
             else if (e is PathIDEvent pie)
             {
                 _textureView.Render(GetTextureByPathID(pie.PathID));
+                _textureView.AssignIndexText($"{pie.CurrIndex+1} / {pie.TotalNumOfAssets}");
             }
         }
 

@@ -49,7 +49,8 @@ namespace UABS.Assets.Script.Controller
                 AssetTextInfo assetTextInfo = assetTextInfos[i];
                 EntryInfoView entryInfoView = _currEntryInfoViews[i];
                 entryInfoView.dispatcher = _appEnvironment.Dispatcher;
-                entryInfoView.Render(assetTextInfo);
+                _appEnvironment.Dispatcher.Register(entryInfoView);
+                entryInfoView.Render(assetTextInfo, i, assetTextInfos.Count);
             }
         }
 

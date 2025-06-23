@@ -4,9 +4,15 @@ namespace UABS.Assets.Script.Event
     {
         public long PathID { get; }
 
-        public PathIDEvent(long pathID)
+        public int CurrIndex { get; }
+
+        public int TotalNumOfAssets { get; }
+
+        public PathIDEvent(long pathID, int currIndex = 0, int totalNumOfAssets = 0)
         {
             PathID = pathID;
+            CurrIndex = currIndex;
+            TotalNumOfAssets = totalNumOfAssets;
         }
     }
 }

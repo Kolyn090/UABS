@@ -6,11 +6,22 @@ using UABS.Assets.Script.ScriptableObjects;
 using UABS.Assets.Script.Event;
 using UABS.Assets.Script.Misc;
 using UABS.Assets.Script.Dispatcher;
+using UABS.Assets.Script.EventListener;
 
 namespace UABS.Assets.Script.View
 {
-    public class EntryInfoView : MonoBehaviour
+    public class EntryInfoView : MonoBehaviour, IAppEventListener
     {
+        [SerializeField]
+        private Image _bg;
+
+        [SerializeField]
+        private Color _highlightColor;
+        [SerializeField]
+        private Color _alternateColor1;
+        [SerializeField]
+        private Color _alternateColor2;
+
         [SerializeField]
         private AssetType2IconData _assetType2IconData;
         
@@ -25,18 +36,20 @@ namespace UABS.Assets.Script.View
 
         [SerializeField]
         private TextMeshProUGUI _pathID;
-        public long PathID => long.Parse(_pathID.text);
 
         private AssetTextInfo _storedInfo;
 
         public EventDispatcher dispatcher = null;
+
+        private int _index;
+        private int _totalEntryNum;
 
         public void TriggerEvent()
         {
             if (dispatcher != null)
             {
                 dispatcher.Dispatch(new AssetTextInfoEvent(_storedInfo));
-                dispatcher.Dispatch(new PathIDEvent(PathID));
+                dispatcher.Dispatch(new PathIDEvent(_storedInfo.pathID, _index, _totalEntryNum));
             }
             else
             {
@@ -44,9 +57,12 @@ namespace UABS.Assets.Script.View
             }
         }
 
-        public void Render(AssetTextInfo assetTextInfo)
+        public void Render(AssetTextInfo assetTextInfo, int index, int totalEntryNum)
         {
+            _index = index;
+            _totalEntryNum = totalEntryNum;
             _storedInfo = assetTextInfo;
+            _bg.color = _index % 2 == 0 ? _alternateColor1 : _alternateColor2;
             AssetClassID assetType = assetTextInfo.type;
             long pathID = assetTextInfo.pathID;
             string name = assetTextInfo.name;
@@ -69,6 +85,34 @@ namespace UABS.Assets.Script.View
             _type.text = className;
             _pathID.text = pathID.ToString();
             Debug.Log($"{_name.text}");
+        }
+
+        public void OnEvent(AppEvent e)
+        {
+            if (e is PathIDEvent pie)
+            {
+                if (_storedInfo.pathID == pie.PathID)
+                {
+                    if (_bg.color != _highlightColor)
+                    {
+                        _bg.color = _highlightColor;
+                    }
+                    else
+                    {
+                        _bg.color = _index % 2 == 0 ? _alternateColor1 : _alternateColor2;
+                    }
+                }
+                else
+                {
+                    if (_bg != null)
+                    {
+                        if (_bg.color == _highlightColor)
+                        {
+                            _bg.color = _index % 2 == 0 ? _alternateColor1 : _alternateColor2;
+                        }
+                    }
+                }
+            }
         }
     }
 }

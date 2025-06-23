@@ -323,12 +323,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5730929e5f7de048bca74ce97dfb715, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _bg: {fileID: 5549703812610441633}
+  _highlightColor: {r: 0, g: 0.764151, b: 0.0060646674, a: 1}
+  _alternateColor1: {r: 0.93333334, g: 1, b: 0.9019608, a: 1}
+  _alternateColor2: {r: 1, g: 1, b: 1, a: 1}
   _assetType2IconData: {fileID: 11400000, guid: c40d3e1704282c442b94e7f1e8657806, type: 2}
   _icon: {fileID: 5549703813184398385}
   _name: {fileID: 5549703812008128108}
   _type: {fileID: 4874983505811349370}
   _pathID: {fileID: 5460815817197786037}
-  _assetBasicInfoEvent: {fileID: 11400000, guid: 8a4aa1bd8463cb7409db411d58ba8e67, type: 2}
 --- !u!1 &5549703812610441636
 GameObject:
   m_ObjectHideFlags: 0
