@@ -48,7 +48,7 @@ namespace UABS.Assets.Script.UI
 
             if (holdTime >= nextInvokeTime)
             {
-                onLongPress?.Invoke();
+                // onLongPress?.Invoke();
 
                 if (!repeating)
                 {

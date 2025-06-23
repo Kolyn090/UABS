@@ -23,13 +23,13 @@ namespace UABS.Assets.Script.EventListener
 
         public void OnEvent(AppEvent e)
         {
-            if (e is AssetDisplayInfoEvent assetDisplayInfoEvent)
+            if (e is AssetTextInfoEvent assetTextInfoEvent)
             {
-                _nameField.text = assetDisplayInfoEvent.Info.name;
-                _pathIDField.text = assetDisplayInfoEvent.Info.pathID.ToString();
-                _fileIDField.text = assetDisplayInfoEvent.Info.fileID.ToString();
-                _sizeField.text = assetDisplayInfoEvent.Info.size.ToString();
-                _pathField.text = assetDisplayInfoEvent.Info.path;
+                _nameField.text = assetTextInfoEvent.Info.name;
+                _pathIDField.text = assetTextInfoEvent.Info.pathID.ToString();
+                _fileIDField.text = assetTextInfoEvent.Info.fileID.ToString();
+                _sizeField.text = $"{assetTextInfoEvent.Info.compressedSize} ({assetTextInfoEvent.Info.uncompressedSize})";
+                _pathField.text = assetTextInfoEvent.Info.path;
             }
         }
     }

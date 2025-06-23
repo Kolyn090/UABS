@@ -47,7 +47,7 @@ namespace UABS.Assets.Script
             var bundle = bundleReader.ReadBundle(TestBundlePath, AppEnvironment.AssetsManager);
         }
 
-        public void InitializeAllAppEnvironment()
+        private void InitializeAllAppEnvironment()
         {
             var allBehaviours = FindObjectsOfType<MonoBehaviour>(true);
             foreach (var behaviour in allBehaviours)

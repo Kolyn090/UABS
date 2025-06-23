@@ -1,10 +1,10 @@
 using UnityEngine;
-using UABS.Assets.Script.Reader;
 using System.Collections.Generic;
 using UABS.Assets.Script.Misc;
 using UABS.Assets.Script.View;
 using UABS.Assets.Script.EventListener;
 using UABS.Assets.Script.Event;
+using System.Linq;
 
 
 namespace UABS.Assets.Script.Controller
@@ -17,35 +17,39 @@ namespace UABS.Assets.Script.Controller
         [SerializeField]
         private GameObject _entryPrefab;
 
-        private ReadDisplayInfoFromBundle _readDisplayInfoFromBundle;
-
         private AppEnvironment _appEnvironment = null;
         public AppEnvironment AppEnvironment => _appEnvironment;
+        List<EntryInfoView> _currEntryInfoViews = new();
+
 
         public void ClearAndLoadFolder()
         {
             ClearContentChildren();
         }
 
-        public void ClearAndLoadBundle(List<AssetDisplayInfo> assetDisplayInfos)
+        public void LoadBundle()
+        {
+            
+        }
+
+        public void ClearAndLoadBundle(List<AssetTextInfo> assetTextInfos)
         {
             ClearContentChildren();
 
-            List<EntryInfoView> entryInfoViews = new();
-            for (int i = 0; i < assetDisplayInfos.Count - 1; i++)
+            _currEntryInfoViews = new();
+            for (int i = 0; i < assetTextInfos.Count; i++)
             {
                 GameObject entryObj = CreateEntry();
                 entryObj.transform.SetParent(_content.transform, worldPositionStays: false);
-                entryInfoViews.Add(entryObj.GetComponentInChildren<EntryInfoView>());
+                _currEntryInfoViews.Add(entryObj.GetComponentInChildren<EntryInfoView>());
             }
 
-            App.Instance.InitializeAllAppEnvironment();
-
-            for (int i = 0; i < assetDisplayInfos.Count-1; i++)
+            for (int i = 0; i < assetTextInfos.Count; i++)
             {
-                AssetDisplayInfo assetDisplayInfo = assetDisplayInfos[i];
-                EntryInfoView entryInfoView = entryInfoViews[i];
-                entryInfoView.Render(assetDisplayInfo);
+                AssetTextInfo assetTextInfo = assetTextInfos[i];
+                EntryInfoView entryInfoView = _currEntryInfoViews[i];
+                entryInfoView.dispatcher = _appEnvironment.Dispatcher;
+                entryInfoView.Render(assetTextInfo);
             }
         }
 
@@ -67,16 +71,15 @@ namespace UABS.Assets.Script.Controller
 
         public void OnEvent(AppEvent e)
         {
-            if (e is BundleReadEvent bre)
+            if (e is AssetsDisplayInfoEvent adie)
             {
-                ClearAndLoadBundle(_readDisplayInfoFromBundle.ReadAllBasicInfo(bre.Bundle));
+                ClearAndLoadBundle(adie.AssetsDisplayInfo.Select(x => x.assetTextInfo).ToList());
             }
         }
 
         public void Initialize(AppEnvironment appEnvironment)
         {
             _appEnvironment = appEnvironment;
-            _readDisplayInfoFromBundle = new(_appEnvironment.AssetsManager);
         }
     }
 }

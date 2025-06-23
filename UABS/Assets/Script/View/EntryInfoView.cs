@@ -5,10 +5,11 @@ using AssetsTools.NET.Extra;
 using UABS.Assets.Script.ScriptableObjects;
 using UABS.Assets.Script.Event;
 using UABS.Assets.Script.Misc;
+using UABS.Assets.Script.Dispatcher;
 
 namespace UABS.Assets.Script.View
 {
-    public class EntryInfoView : MonoBehaviour, IAppEnvironment
+    public class EntryInfoView : MonoBehaviour
     {
         [SerializeField]
         private AssetType2IconData _assetType2IconData;
@@ -24,24 +25,31 @@ namespace UABS.Assets.Script.View
 
         [SerializeField]
         private TextMeshProUGUI _pathID;
+        public long PathID => long.Parse(_pathID.text);
 
-        private AssetDisplayInfo _storedInfo;
+        private AssetTextInfo _storedInfo;
 
-        private AppEnvironment _appEnvironment = null;
-
-        public AppEnvironment AppEnvironment => _appEnvironment;
+        public EventDispatcher dispatcher = null;
 
         public void TriggerEvent()
         {
-            _appEnvironment.Dispatcher.Dispatch(new AssetDisplayInfoEvent(_storedInfo));
+            if (dispatcher != null)
+            {
+                dispatcher.Dispatch(new AssetTextInfoEvent(_storedInfo));
+                dispatcher.Dispatch(new PathIDEvent(PathID));
+            }
+            else
+            {
+                throw new System.Exception("Entry Info View missing dispatcher. Please assign first.");
+            }
         }
 
-        public void Render(AssetDisplayInfo assetDisplayInfo)
+        public void Render(AssetTextInfo assetTextInfo)
         {
-            _storedInfo = assetDisplayInfo;
-            AssetClassID assetType = assetDisplayInfo.type;
-            long pathID = assetDisplayInfo.pathID;
-            string name = assetDisplayInfo.name;
+            _storedInfo = assetTextInfo;
+            AssetClassID assetType = assetTextInfo.type;
+            long pathID = assetTextInfo.pathID;
+            string name = assetTextInfo.name;
 
             _icon.sprite = _assetType2IconData.GetIcon(assetType);
             _name.text = name;
@@ -61,11 +69,6 @@ namespace UABS.Assets.Script.View
             _type.text = className;
             _pathID.text = pathID.ToString();
             Debug.Log($"{_name.text}");
-        }
-
-        public void Initialize(AppEnvironment appEnvironment)
-        {
-            _appEnvironment = appEnvironment;
         }
     }
 }

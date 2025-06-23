@@ -96,18 +96,24 @@ namespace UABS.Assets.Script.Reader
             {
                 AtlasDumpProcessor atlasDumpInfoForSprite = (AtlasDumpProcessor)_atlasDumpInfoForSprite;
                 Dictionary<int, int> index2RenderDataKey = atlasDumpInfoForSprite.GetIndex2ActualRenderDataKeyIndex();
+                Dictionary<long, int> pathID2Index = atlasDumpInfoForSprite.GetPathID2Index();
+                // foreach (var item in index2RenderDataKey)
+                // {
+                //     Debug.Log($"{item.Key}, {item.Value}");
+                // }
+                // Debug.Log($"{pathID}, {pathID2Index[pathID]}, {index2RenderDataKey[pathID2Index[pathID]]}");
                 AssetTypeValueField spriteBase = AssetsManager.GetBaseField(_currFileInst, targetAsset);
                 AssetTypeValueField atlasRefField = spriteBase["m_SpriteAtlas"];
                 AssetExternal atlasAsset = GetExternalAsset(AssetsManager, _currFileInst, bunInst, atlasRefField);
                 AssetTypeValueField atlasBase = AssetsManager.GetBaseField(atlasAsset.file, atlasAsset.info);
                 AssetTypeValueField renderDataMap = atlasBase["m_RenderDataMap"];
-                AssetTypeValueField dataArray = renderDataMap["Array"][index2RenderDataKey[indexInAssets]]; // The true index in dict
+                AssetTypeValueField dataArray = renderDataMap["Array"][index2RenderDataKey[pathID2Index[pathID]]]; // The true index in dict
                 AssetTypeValueField firstEntry = dataArray["second"];
                 AssetTypeValueField texturePtr = firstEntry["texture"];
                 AssetExternal texAsset = GetExternalAsset(AssetsManager, _currFileInst, bunInst, texturePtr);
                 AssetTypeValueField texBase = AssetsManager.GetBaseField(atlasAsset.file, texAsset.info);
 
-                Rect spriteRect = atlasDumpInfoForSprite.GetRectAtActualIndex(index2RenderDataKey[indexInAssets]);
+                Rect spriteRect = atlasDumpInfoForSprite.GetRectAtActualIndex(index2RenderDataKey[pathID2Index[pathID]]);
 
                 int textureWidth = texBase["m_Width"].AsInt;
                 int textureHeight = texBase["m_Height"].AsInt;
@@ -231,45 +237,44 @@ namespace UABS.Assets.Script.Reader
                 return null;
             }
 
-            foreach (AssetFileInfo texInfo in _currAssetInfos)
+            AssetFileInfo targetAsset = _currAssetInfos[indexInAssets];
+            AssetTypeValueField texBase = AssetsManager.GetBaseField(_currFileInst, targetAsset);
+            int width = texBase["m_Width"].AsInt;
+            int height = texBase["m_Height"].AsInt;
+            int format = texBase["m_TextureFormat"].AsInt;
+            byte[] imageBytes = GetImageData(texBase, _currFileInst, bunInst);
+
+            if (IsSupportedBCnFormat((TextureFormat)format, out CompressionFormat bcnFormat))
             {
-                AssetTypeValueField texBase = AssetsManager.GetBaseField(_currFileInst, texInfo);
-                int width = texBase["m_Width"].AsInt;
-                int height = texBase["m_Height"].AsInt;
-                int format = texBase["m_TextureFormat"].AsInt;
-                byte[] imageBytes = GetImageData(texBase, _currFileInst, bunInst);
+                var decoder = new BcDecoder();
+                ColorRgba32[] decoded = decoder.DecodeRaw(imageBytes, width, height, CompressionFormat.Bc7);
 
-                if (IsSupportedBCnFormat((TextureFormat)format, out CompressionFormat bcnFormat))
-                {
-                    var decoder = new BcDecoder();
-                    ColorRgba32[] decoded = decoder.DecodeRaw(imageBytes, width, height, CompressionFormat.Bc7);
+                byte[] rgbaBytes = new byte[decoded.Length * 4];
+                MemoryMarshal.Cast<ColorRgba32, byte>(decoded.AsSpan()).CopyTo(rgbaBytes);
 
-                    byte[] rgbaBytes = new byte[decoded.Length * 4];
-                    MemoryMarshal.Cast<ColorRgba32, byte>(decoded.AsSpan()).CopyTo(rgbaBytes);
+                Texture2D texture = new(width, height, TextureFormat.RGBA32, false);
+                texture.LoadRawTextureData(rgbaBytes);
+                texture.filterMode = FilterMode.Point;
+                texture.Apply();
 
-                    Texture2D texture = new(width, height, TextureFormat.RGBA32, false);
-                    texture.LoadRawTextureData(rgbaBytes);
-                    texture.filterMode = FilterMode.Point;
-                    texture.Apply();
-
-                    // Now you can assign tex to a material or use it however you need
-                    // Debug.Log($"Decoded BC7 texture: {width}x{height}");
-                    return PadToSquare(texture);
-                }
-                else if (imageBytes.Length == width * height * format)
-                {
-                    TextureFormat unityFormat = TextureFormat.RGBA32;
-                    Texture2D texture = new(width, height, unityFormat, false);
-                    texture.LoadRawTextureData(imageBytes);
-                    texture.filterMode = FilterMode.Point;
-                    texture.Apply();
-                    return PadToSquare(texture);
-                }
-                else
-                {
-                    Debug.LogError($"Expected {width * height * format} bytes, got {imageBytes.Length}");
-                }
+                // Now you can assign tex to a material or use it however you need
+                // Debug.Log($"Decoded BC7 texture: {width}x{height}");
+                return PadToSquare(texture);
             }
+            else if (imageBytes.Length == width * height * format)
+            {
+                TextureFormat unityFormat = TextureFormat.RGBA32;
+                Texture2D texture = new(width, height, unityFormat, false);
+                texture.LoadRawTextureData(imageBytes);
+                texture.filterMode = FilterMode.Point;
+                texture.Apply();
+                return PadToSquare(texture);
+            }
+            else
+            {
+                Debug.LogError($"Expected {width * height * format} bytes, got {imageBytes.Length}");
+            }
+
             return null;
         }
 

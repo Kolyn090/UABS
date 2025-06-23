@@ -1,11 +1,11 @@
 using UnityEngine;
-using UABS.Assets.Script.Reader;
 using UABS.Assets.Script.View;
-using System.Collections.Generic;
 using UABS.Assets.Script.EventListener;
 using UABS.Assets.Script.Event;
+using UABS.Assets.Script.Reader;
 using UABS.Assets.Script.Misc;
 using AssetsTools.NET.Extra;
+using System.Collections.Generic;
 
 namespace UABS.Assets.Script.Controller
 {
@@ -13,20 +13,18 @@ namespace UABS.Assets.Script.Controller
     {
         [SerializeField]
         private TextureView _textureView;
-
         private ReadTexturesFromBundle _readTexturesFromBundle;
+        private BundleFileInstance _currBunInst;
+        private Dictionary<long, Texture2D> _cacheTextureByPathID;
 
         private AppEnvironment _appEnvironment = null;
         public AppEnvironment AppEnvironment => _appEnvironment;
 
-        private BundleFileInstance _currBunInst = null;
-
-        private Dictionary<long, Texture2D> _storedTexture2D = new();
-
         public void Initialize(AppEnvironment appEnvironment)
         {
             _appEnvironment = appEnvironment;
-            _readTexturesFromBundle = new(_appEnvironment.AssetsManager);
+            _textureView.dispatcher = appEnvironment.Dispatcher;
+            _readTexturesFromBundle = new(appEnvironment.AssetsManager);
         }
 
         public void OnEvent(AppEvent e)
@@ -34,13 +32,18 @@ namespace UABS.Assets.Script.Controller
             if (e is BundleReadEvent bre)
             {
                 _currBunInst = bre.Bundle;
-                _storedTexture2D = new();
-                // List<Texture2D> textures = _readTexturesFromBundle.ReadSpritesInAtlas(bre.Bundle);
-                // _textureView.AssignTextures(textures);
+                _cacheTextureByPathID = new();
             }
-            else if (e is AssetDisplayInfoEvent assetDisplayInfoEvent)
+            else if (e is PathIDEvent pie)
             {
-                long pathID = assetDisplayInfoEvent.Info.pathID;
+                _textureView.Render(GetTextureByPathID(pie.PathID));
+            }
+        }
+
+        private Texture2D GetTextureByPathID(long pathID)
+        {
+            if (!_cacheTextureByPathID.ContainsKey(pathID))
+            {
                 Texture2D readTexture = _readTexturesFromBundle.ReadSpriteByPathID(_currBunInst, pathID);
                 if (readTexture == null)
                 {
@@ -50,9 +53,10 @@ namespace UABS.Assets.Script.Controller
                 {
                     Debug.LogError($"The given path id {pathID} is neither Texture2D nor Sprite.");
                 }
-                _storedTexture2D[pathID] = readTexture;
-                _textureView.AssignTextureToImage(readTexture);
+                _cacheTextureByPathID[pathID] = readTexture;
+                return readTexture;
             }
+            return _cacheTextureByPathID[pathID];
         }
     }
 }

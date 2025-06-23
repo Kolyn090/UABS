@@ -8,36 +8,36 @@ using UABS.Assets.Script.Misc;
 
 namespace UABS.Assets.Script.Reader
 {
-    public class ReadDisplayInfoFromBundle
+    public class ReadTextInfoFromBundle
     {
         private AssetsManager AssetsManager { get; }
 
-        public ReadDisplayInfoFromBundle(AssetsManager am)
+        public ReadTextInfoFromBundle(AssetsManager am)
         {
             AssetsManager = am;
         }
 
-        public List<AssetDisplayInfo> ReadAllBasicInfo(BundleFileInstance bunInst)
+        public List<AssetTextInfo> ReadAllBasicInfo(BundleFileInstance bunInst)
         {
-            List<AssetDisplayInfo> result = new();
+            List<AssetTextInfo> result = new();
             result.AddRange(ReadSpritesBasicInfo(bunInst));
             result.AddRange(ReadTexture2DBasicInfo(bunInst));
             return result;
         }
 
-        public List<AssetDisplayInfo> ReadSpritesBasicInfo(BundleFileInstance bunInst)
+        public List<AssetTextInfo> ReadSpritesBasicInfo(BundleFileInstance bunInst)
         {
             AssetsFileInstance fileInst = AssetsManager.LoadAssetsFileFromBundle(bunInst, 0, false);
             return ReadBasicInfoOf(AssetClassID.Sprite, fileInst, AssetsManager);
         }
 
-        public List<AssetDisplayInfo> ReadTexture2DBasicInfo(BundleFileInstance bunInst)
+        public List<AssetTextInfo> ReadTexture2DBasicInfo(BundleFileInstance bunInst)
         {
             AssetsFileInstance fileInst = AssetsManager.LoadAssetsFileFromBundle(bunInst, 0, false);
             return ReadBasicInfoOf(AssetClassID.Texture2D, fileInst, AssetsManager);
         }
 
-        private static List<AssetDisplayInfo> ReadBasicInfoOf(AssetClassID assetType,
+        private static List<AssetTextInfo> ReadBasicInfoOf(AssetClassID assetType,
                                                                 AssetsFileInstance fileInst,
                                                                 AssetsManager am)
         {
@@ -88,7 +88,7 @@ namespace UABS.Assets.Script.Reader
                 }
             }
 
-            List<AssetDisplayInfo> result = new();
+            List<AssetTextInfo> result = new();
             List<AssetFileInfo> assets = fileInst.file.GetAssetsOfType(assetType);
             foreach (AssetFileInfo asset in assets)
             {
@@ -108,7 +108,8 @@ namespace UABS.Assets.Script.Reader
                     pathID = pathId,
                     fileID = fileId,
                     path = filePath,
-                    size = size,
+                    compressedSize = asset.ByteSize,
+                    uncompressedSize = size,
                     type = assetType
                 });
             }
