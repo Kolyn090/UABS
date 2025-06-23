@@ -3,48 +3,49 @@ using UABS.Assets.Script.Reader;
 using System.Collections.Generic;
 using UABS.Assets.Script.Misc;
 using UABS.Assets.Script.View;
-using UABS.Assets.Script.ScriptableObjects;
+using UABS.Assets.Script.EventListener;
+using UABS.Assets.Script.Event;
+
 
 namespace UABS.Assets.Script.Controller
 {
-    public class LoadEntries2ScrollView : MonoBehaviour
+    public class LoadEntries2ScrollView : MonoBehaviour, IAppEventListener, IAppEnvironment
     {
-        private const string TestBundlePath = @"\\?\C:\Program Files (x86)\Steam\steamapps\common\Otherworld Legends\Otherworld Legends_Data\StreamingAssets\aa\StandaloneWindows64\graphiceffecttextureseparatelygroup_assets_assets\sprites\unit\unit_other_pile.psd_0678876b821c494df01ee1384bec84f2.bundle";
-
-        [SerializeField]
-        private AssetType2IconData _assetType2IconData;
-
         [SerializeField]
         private GameObject _content;
 
         [SerializeField]
         private GameObject _entryPrefab;
 
-        private void Start()
-        {
-            List<AssetBasicInfo> spriteBasicInfos = ReadBasicInfoFromBundle.ReadAllBasicInfo(TestBundlePath);
-            ClearAndLoadBundle(spriteBasicInfos);
-        }
+        private ReadDisplayInfoFromBundle _readDisplayInfoFromBundle;
+
+        private AppEnvironment _appEnvironment = null;
+        public AppEnvironment AppEnvironment => _appEnvironment;
 
         public void ClearAndLoadFolder()
         {
             ClearContentChildren();
         }
 
-        public void ClearAndLoadBundle(List<AssetBasicInfo> assetBasicInfos)
+        public void ClearAndLoadBundle(List<AssetDisplayInfo> assetDisplayInfos)
         {
             ClearContentChildren();
-            foreach (AssetBasicInfo assetBasicInfo in assetBasicInfos)
+
+            List<EntryInfoView> entryInfoViews = new();
+            for (int i = 0; i < assetDisplayInfos.Count - 1; i++)
             {
                 GameObject entryObj = CreateEntry();
                 entryObj.transform.SetParent(_content.transform, worldPositionStays: false);
+                entryInfoViews.Add(entryObj.GetComponentInChildren<EntryInfoView>());
+            }
 
-                EntryInfoView entryInfoView = entryObj.GetComponentInChildren<EntryInfoView>();
-                entryInfoView.Render(
-                    _assetType2IconData.GetIcon(assetBasicInfo.type),
-                    assetBasicInfo.name,
-                    assetBasicInfo.type,
-                    assetBasicInfo.pathID.ToString());
+            App.Instance.InitializeAllAppEnvironment();
+
+            for (int i = 0; i < assetDisplayInfos.Count-1; i++)
+            {
+                AssetDisplayInfo assetDisplayInfo = assetDisplayInfos[i];
+                EntryInfoView entryInfoView = entryInfoViews[i];
+                entryInfoView.Render(assetDisplayInfo);
             }
         }
 
@@ -57,11 +58,25 @@ namespace UABS.Assets.Script.Controller
         {
             Transform parentTransform = _content.transform;
 
-            for (int i = parentTransform.childCount - 1; i >= 0; i--)
+            for (int i = parentTransform.childCount-1; i >= 0; i--)
             {
                 GameObject child = parentTransform.GetChild(i).gameObject;
                 Destroy(child);
             }
+        }
+
+        public void OnEvent(AppEvent e)
+        {
+            if (e is BundleReadEvent bre)
+            {
+                ClearAndLoadBundle(_readDisplayInfoFromBundle.ReadAllBasicInfo(bre.Bundle));
+            }
+        }
+
+        public void Initialize(AppEnvironment appEnvironment)
+        {
+            _appEnvironment = appEnvironment;
+            _readDisplayInfoFromBundle = new(_appEnvironment.AssetsManager);
         }
     }
 }

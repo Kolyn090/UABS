@@ -13,27 +13,32 @@ namespace UABS.Assets.Script.Reader
             public long pathID;
         }
 
-        public static List<DumpInfo> ReadSpriteAtlasDumps(string bundlePath)
+        private AssetsManager AssetsManager { get; }
+
+        public DumpReader(AssetsManager am)
         {
-            return ReadDumps(bundlePath, AssetClassID.SpriteAtlas);
+            AssetsManager = am;
         }
 
-        public static List<DumpInfo> ReadSpriteDumps(string bundlePath)
+        public List<DumpInfo> ReadSpriteAtlasDumps(BundleFileInstance bunInst)
         {
-            return ReadDumps(bundlePath, AssetClassID.Sprite);
+            return ReadDumps(bunInst, AssetClassID.SpriteAtlas);
         }
 
-        public static List<DumpInfo> ReadTexture2DDumps(string bundlePath)
+        public List<DumpInfo> ReadSpriteDumps(BundleFileInstance bunInst)
         {
-            return ReadDumps(bundlePath, AssetClassID.Texture2D);
+            return ReadDumps(bunInst, AssetClassID.Sprite);
         }
 
-        private static List<DumpInfo> ReadDumps(string bundlePath, AssetClassID assetType)
+        public List<DumpInfo> ReadTexture2DDumps(BundleFileInstance bunInst)
+        {
+            return ReadDumps(bunInst, AssetClassID.Texture2D);
+        }
+
+        private List<DumpInfo> ReadDumps(BundleFileInstance bunInst, AssetClassID assetType)
         {
             List<DumpInfo> result = new();
-            AssetsManager am = new();
-            BundleFileInstance bunInst = am.LoadBundleFile(bundlePath, true);
-            AssetsFileInstance fileInst = am.LoadAssetsFileFromBundle(bunInst, 0, false);
+            AssetsFileInstance fileInst = AssetsManager.LoadAssetsFileFromBundle(bunInst, 0, false);
 
             List<AssetFileInfo> assetInfos = fileInst.file.GetAssetsOfType(assetType);
             if (assetInfos.Count == 0)
@@ -41,7 +46,7 @@ namespace UABS.Assets.Script.Reader
 
             foreach (var assetInfo in assetInfos)
             {
-                AssetTypeValueField assetBase = am.GetBaseField(fileInst, assetInfo);
+                AssetTypeValueField assetBase = AssetsManager.GetBaseField(fileInst, assetInfo);
                 result.Add(new()
                 {
                     dumpJson = (JObject)JsonDumper.RecurseJsonDump(assetBase, true),
