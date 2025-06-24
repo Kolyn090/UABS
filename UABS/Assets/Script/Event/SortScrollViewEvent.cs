@@ -8,7 +8,7 @@ namespace UABS.Assets.Script.Event
 
         public SortScrollViewEvent(SortProp sortProp)
         {
-            sortProp = SortProp;
+            SortProp = sortProp;
         }
     }
 }

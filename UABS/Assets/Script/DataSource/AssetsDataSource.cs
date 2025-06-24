@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using AssetsTools.NET.Extra;
 using UABS.Assets.Script.DataStruct;
 using UABS.Assets.Script.Event;
@@ -33,6 +34,51 @@ namespace UABS.Assets.Script.DataSource
                 }
                 _appEnvironment.Dispatcher.Dispatch(new AssetsDisplayInfoEvent(_assetsDisplayInfo));
             }
+            else if (e is SortScrollViewEvent ssve)
+            {
+                SortByType sortByType = ssve.SortProp.sortByType;
+                SortOrder sortOrder = ssve.SortProp.sortOrder;
+                _assetsDisplayInfo = SortedAssetsDisplayInfo(sortByType, sortOrder);
+                _appEnvironment.Dispatcher.Dispatch(new AssetsDisplayInfoEvent(_assetsDisplayInfo));
+            }
+        }
+
+        private List<AssetDisplayInfo> SortedAssetsDisplayInfo(SortByType sortByType, SortOrder sortOrder)
+        {
+            if (sortByType == SortByType.Name)
+            {
+                if (sortOrder == SortOrder.Down)
+                {
+                    return _assetsDisplayInfo.OrderBy(x => x.assetTextInfo.name).ToList();
+                }
+                else if (sortOrder == SortOrder.Up)
+                {
+                    return _assetsDisplayInfo.OrderByDescending(x => x.assetTextInfo.name).ToList();
+                }
+            }
+            else if (sortByType == SortByType.Type)
+            {
+                if (sortOrder == SortOrder.Down)
+                {
+                    return _assetsDisplayInfo.OrderBy(x => x.assetTextInfo.type).ToList();
+                }
+                else if (sortOrder == SortOrder.Up)
+                {
+                    return _assetsDisplayInfo.OrderByDescending(x => x.assetTextInfo.type).ToList();
+                }
+            }
+            else if (sortByType == SortByType.PathID)
+            {
+                if (sortOrder == SortOrder.Down)
+                {
+                    return _assetsDisplayInfo.OrderBy(x => x.assetTextInfo.pathID).ToList();
+                }
+                else if (sortOrder == SortOrder.Up)
+                {
+                    return _assetsDisplayInfo.OrderByDescending(x => x.assetTextInfo.pathID).ToList();
+                }
+            }
+            return _assetsDisplayInfo;
         }
 
         public void Initialize(AppEnvironment appEnvironment)
