@@ -6,12 +6,10 @@ namespace UABS.Assets.Script.Event
     public class FolderViewInfosEvent : AppEvent
     {
         public List<FolderViewInfo> FoldViewInfos { get; }
-        public bool ClearCurrEntries { get; }
 
-        public FolderViewInfosEvent(List<FolderViewInfo> folderViewInfos, bool clearCurrentEntries = true)
+        public FolderViewInfosEvent(List<FolderViewInfo> folderViewInfos)
         {
             FoldViewInfos = folderViewInfos;
-            ClearCurrEntries = clearCurrentEntries;
         }
     }
 }

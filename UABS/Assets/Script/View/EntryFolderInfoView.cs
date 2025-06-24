@@ -1,17 +1,15 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using AssetsTools.NET.Extra;
 using UABS.Assets.Script.ScriptableObjects;
 using UABS.Assets.Script.Event;
-using UABS.Assets.Script.Misc;
 using UABS.Assets.Script.Dispatcher;
-using UABS.Assets.Script.EventListener;
 using UABS.Assets.Script.DataStruct;
+using System.IO;
 
 namespace UABS.Assets.Script.View
 {
-    public class EntryFolderInfoView : MonoBehaviour, IAppEventListener
+    public class EntryFolderInfoView : MonoBehaviour
     {
         [SerializeField]
         private Image _bg;
@@ -32,22 +30,25 @@ namespace UABS.Assets.Script.View
         [SerializeField]
         private TextMeshProUGUI _name;
 
-        [SerializeField]
-        private TextMeshProUGUI _path;  // Folder
-
-        private FolderViewInfo _storedFolderViewInfo;  // Folder
+        private FolderViewInfo _storedFolderViewInfo;
 
         public EventDispatcher dispatcher = null;
-        private Scrollbar _scrollbarRef;
 
         private int _index;
-        private int _totalEntryNum;
-        
+
         public void TriggerEvent()
         {
             if (dispatcher != null)
             {
-                
+                string nextPath = _storedFolderViewInfo.path;
+                if (Directory.Exists(nextPath))
+                {
+                    dispatcher.Dispatch(new FolderReadEvent(nextPath));
+                }
+                else
+                {
+                    // You should probably go to bundle view.
+                }
             }
             else
             {
@@ -55,11 +56,9 @@ namespace UABS.Assets.Script.View
             }
         }
 
-        public void AssignStuff(int index, int totalEntryNum, Scrollbar scrollbar)
+        public void AssignStuff(int index)
         {
             _index = index;
-            _totalEntryNum = totalEntryNum;
-            _scrollbarRef = scrollbar;
         }
 
         public void Render(FolderViewInfo folderViewInfo)
@@ -68,50 +67,10 @@ namespace UABS.Assets.Script.View
             _bg.color = _index % 2 == 0 ? _alternateColor1 : _alternateColor2;
             FolderViewType folderViewType = folderViewInfo.type;
             string name = folderViewInfo.name;
-            string path = folderViewInfo.path;
+            // string path = folderViewInfo.path;
 
             _icon.sprite = _folderViewType2IconData.GetIcon(folderViewType);
             _name.text = name;
-            _path.text = path;
-        }
-
-        public void OnEvent(AppEvent e)
-        {
-            // if (e is SelectionEvent ase)
-            // {
-            //     if (_storedAssetInfo.pathID == ase.PathID)
-            //     {
-            //         if (_bg.color != _highlightColor)
-            //         {
-            //             _bg.color = _highlightColor;
-            //         }
-            //         else
-            //         {
-            //             _bg.color = _index % 2 == 0 ? _alternateColor1 : _alternateColor2;
-            //         }
-            //         if (ase.UseJump)
-            //             Jump2Me();
-            //         dispatcher.Dispatch(new AssetTextInfoEvent(_storedAssetInfo));
-            //     }
-            //     else
-            //     {
-            //         if (_bg != null)
-            //         {
-            //             if (_bg.color == _highlightColor)
-            //             {
-            //                 _bg.color = _index % 2 == 0 ? _alternateColor1 : _alternateColor2;
-            //             }
-            //         }
-            //     }
-            // }
-        }
-
-        private void Jump2Me()
-        {
-            float newScrollbarValue = 1 - _index / (float)_totalEntryNum;
-            if (_index == _totalEntryNum - 1)
-                newScrollbarValue = 0;
-            _scrollbarRef.value = newScrollbarValue;
         }
     }
 }

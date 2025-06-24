@@ -46,8 +46,10 @@ namespace UABS.Assets.Script
             // string TestBundlePath2 = @"\\?\C:\Program Files (x86)\Steam\steamapps\common\Otherworld Legends\Otherworld Legends_Data\StreamingAssets\aa\StandaloneWindows64\graphiceffecttextureseparatelygroup_assets_assets\sprites\uniteffect_0.spriteatlas_66b2db9fb94b5bda5b7794c6ed82cf3f.bundle";
             // string TestBundlePath3 = @"\\?\C:\Program Files (x86)\Steam\steamapps\common\Otherworld Legends\Otherworld Legends_Data\StreamingAssets\aa\StandaloneWindows64\spriteassetgroup_assets_assets\needdynamicloadresources\spritereference\unit_hero_quanhuying_bartender.asset_d6edc88258e9f90ae565393468c0fc94.bundle";
             // string TestBundlePath4 = @"\\?\C:\Program Files (x86)\Steam\steamapps\common\Otherworld Legends\Otherworld Legends_Data\StreamingAssets\aa\StandaloneWindows64\spriteassetgroup_assets_assets\needdynamicloadresources\spritereference\unit_hero_gangdan.asset_266134690b1c6daffbecb67815ff8868.bundle";
+
             // var bundleReader = new BundleReader(AppEnvironment.Dispatcher);
-            // var bundle = bundleReader.ReadBundle(TestBundlePath4, AppEnvironment.AssetsManager);
+            // var bundle = bundleReader.ReadBundle(TestBundlePath2, AppEnvironment.AssetsManager);
+
             AppEnvironment.Dispatcher.Dispatch(new FolderReadEvent(PlatformFolder));
         }
 
