@@ -30,7 +30,10 @@ namespace UABS.Assets.Script.Controller
                     _bundlePage.gameObject.SetActive(false);
                     _folderPage.gameObject.SetActive(true);
                 }
-                else
+            }
+            else if (e is BundleReadEvent bre)
+            {
+                if (File.Exists(bre.FilePath))
                 {
                     _bundlePage.gameObject.SetActive(true);
                     _folderPage.gameObject.SetActive(false);

@@ -50,7 +50,7 @@ namespace UABS.Assets.Script
             // BundleReader bundleReader = new(AppEnvironment);
             // bundleReader.ReadBundle(TestBundlePath3);
 
-            AppEnvironment.Dispatcher.Dispatch(new FolderReadEvent(PlatformFolder));
+            // AppEnvironment.Dispatcher.Dispatch(new FolderReadEvent(PlatformFolder));
         }
 
         private void InitializeAllAppEnvironment()
