@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using UABS.Assets.Script.DataStruct;
@@ -38,7 +39,7 @@ namespace UABS.Assets.Script.Reader
 
             foreach (string file in allFiles)
             {
-                if (file.EndsWith(".bundle"))
+                if (IsExtension(file, ".bundle"))
                     result.Add(new()
                     {
                         name = Path.GetFileName(file),
@@ -48,6 +49,12 @@ namespace UABS.Assets.Script.Reader
             }
 
             return result;
+        }
+
+        private static bool IsExtension(string filePath, string expectedExtension)
+        {
+            // Compares extensions case-insensitively
+            return string.Equals(Path.GetExtension(filePath), expectedExtension, StringComparison.OrdinalIgnoreCase);
         }
     }
 }

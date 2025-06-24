@@ -1,21 +1,23 @@
 using AssetsTools.NET.Extra;
 using UABS.Assets.Script.Dispatcher;
 using UABS.Assets.Script.Event;
+using UABS.Assets.Script.Misc;
 
 namespace UABS.Assets.Script.Reader
 {
     public class BundleReader
     {
-        private readonly EventDispatcher _dispatcher;
-        public BundleReader(EventDispatcher dispatcher)
+        private readonly AppEnvironment _appEnvironment;
+
+        public BundleReader( AppEnvironment appEnvironment)
         {
-            _dispatcher = dispatcher;
+            _appEnvironment = appEnvironment;
         }
 
-        public BundleFileInstance ReadBundle(string path, AssetsManager am)
+        public BundleFileInstance ReadBundle(string path)
         {
-            BundleFileInstance bunInst = am.LoadBundleFile(path, true);
-            _dispatcher.Dispatch(new BundleReadEvent(bunInst, path));
+            BundleFileInstance bunInst = _appEnvironment.AssetsManager.LoadBundleFile(path, true);
+            _appEnvironment.Dispatcher.Dispatch(new BundleReadEvent(bunInst, path));
             return bunInst;
         }
     }

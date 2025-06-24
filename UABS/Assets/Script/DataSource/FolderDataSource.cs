@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using AssetsTools.NET.Extra;
@@ -28,8 +29,17 @@ namespace UABS.Assets.Script.DataSource
         {
             if (e is FolderReadEvent fre)
             {
-                List<FolderViewInfo> allReadable = _readFolderContent.ReadAllReadable(fre.FolderPath);
-                AppEnvironment.Dispatcher.Dispatch(new FolderViewInfosEvent(allReadable));
+                if (Directory.Exists(fre.FolderPath))
+                {
+                    List<FolderViewInfo> allReadable = _readFolderContent.ReadAllReadable(fre.FolderPath);
+                    AppEnvironment.Dispatcher.Dispatch(new FolderViewInfosEvent(allReadable));
+                }
+                else
+                {
+                    Debug.Log($"{fre.FolderPath} is not a folder, attempt to read it as a bundle.");
+                    BundleReader bundleReader = new(AppEnvironment);
+                    bundleReader.ReadBundle(fre.FolderPath);
+                }
             }
         }
     }

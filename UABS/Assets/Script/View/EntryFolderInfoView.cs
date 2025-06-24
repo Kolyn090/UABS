@@ -6,6 +6,7 @@ using UABS.Assets.Script.Event;
 using UABS.Assets.Script.Dispatcher;
 using UABS.Assets.Script.DataStruct;
 using System.IO;
+using UABS.Assets.Script.Reader;
 
 namespace UABS.Assets.Script.View
 {
@@ -41,14 +42,7 @@ namespace UABS.Assets.Script.View
             if (dispatcher != null)
             {
                 string nextPath = _storedFolderViewInfo.path;
-                if (Directory.Exists(nextPath))
-                {
-                    dispatcher.Dispatch(new FolderReadEvent(nextPath));
-                }
-                else
-                {
-                    // You should probably go to bundle view.
-                }
+                dispatcher.Dispatch(new FolderReadEvent(nextPath));
             }
             else
             {
