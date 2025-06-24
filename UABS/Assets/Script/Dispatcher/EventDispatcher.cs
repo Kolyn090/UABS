@@ -8,6 +8,7 @@ namespace UABS.Assets.Script.Dispatcher
     {
         private readonly List<IAppEventListener> _listeners = new();
         public void Register(IAppEventListener listener) => _listeners.Add(listener);
+        public void Unregister(IAppEventListener listener) => _listeners.Remove(listener);
 
         public void Dispatch(AppEvent e)
         {

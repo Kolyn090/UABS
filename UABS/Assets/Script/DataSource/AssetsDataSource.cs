@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using AssetsTools.NET.Extra;
 using UABS.Assets.Script.DataStruct;
 using UABS.Assets.Script.Event;
@@ -49,11 +51,13 @@ namespace UABS.Assets.Script.DataSource
             {
                 if (sortOrder == SortOrder.Down)
                 {
-                    return _assetsDisplayInfo.OrderBy(x => x.assetTextInfo.name).ToList();
+                    _assetsDisplayInfo.Sort((a, b) => NaturalCompare(a.assetTextInfo.name, b.assetTextInfo.name));
+                    return _assetsDisplayInfo;
                 }
                 else if (sortOrder == SortOrder.Up)
                 {
-                    return _assetsDisplayInfo.OrderByDescending(x => x.assetTextInfo.name).ToList();
+                    _assetsDisplayInfo.Sort((b, a) => NaturalCompare(a.assetTextInfo.name, b.assetTextInfo.name));
+                    return _assetsDisplayInfo;
                 }
             }
             else if (sortByType == SortByType.Type)
@@ -79,6 +83,35 @@ namespace UABS.Assets.Script.DataSource
                 }
             }
             return _assetsDisplayInfo;
+        }
+
+        private static int NaturalCompare(string a, string b)
+        {
+            var regex = new Regex(@"\d+|\D+");
+            var matchesA = regex.Matches(a);
+            var matchesB = regex.Matches(b);
+            int i = 0;
+
+            while (i < matchesA.Count && i < matchesB.Count)
+            {
+                var chunkA = matchesA[i].Value;
+                var chunkB = matchesB[i].Value;
+
+                if (int.TryParse(chunkA, out int numA) && int.TryParse(chunkB, out int numB))
+                {
+                    int cmp = numA.CompareTo(numB);
+                    if (cmp != 0) return cmp;
+                }
+                else
+                {
+                    int cmp = string.Compare(chunkA, chunkB, StringComparison.OrdinalIgnoreCase);
+                    if (cmp != 0) return cmp;
+                }
+
+                i++;
+            }
+
+            return matchesA.Count.CompareTo(matchesB.Count);
         }
 
         public void Initialize(AppEnvironment appEnvironment)

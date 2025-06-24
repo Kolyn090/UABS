@@ -23,8 +23,7 @@ namespace UABS.Assets.Script.Controller
 
         private AppEnvironment _appEnvironment = null;
         public AppEnvironment AppEnvironment => _appEnvironment;
-        List<EntryInfoView> _currEntryInfoViews = new();
-
+        private List<EntryInfoView> _currEntryInfoViews = new();
 
         public void ClearAndLoadFolder()
         {
@@ -66,12 +65,18 @@ namespace UABS.Assets.Script.Controller
 
         private void ClearContentChildren()
         {
+            for (int i = 0; i < _currEntryInfoViews.Count; i++)
+            {
+                AppEnvironment.Dispatcher.Unregister(_currEntryInfoViews[i]);
+            }
+
             Transform parentTransform = _content.transform;
 
-            for (int i = parentTransform.childCount-1; i >= 0; i--)
+            for (int i = parentTransform.childCount - 1; i >= 0; i--)
             {
                 GameObject child = parentTransform.GetChild(i).gameObject;
                 Destroy(child);
+                child = null;
             }
         }
 
