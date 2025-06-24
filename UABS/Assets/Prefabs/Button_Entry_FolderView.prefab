@@ -89,7 +89,7 @@ GameObject:
   - component: {fileID: 1618457687704587267}
   - component: {fileID: 1618457687704587264}
   m_Layer: 5
-  m_Name: Button_Folder_FolderView
+  m_Name: Button_Entry_FolderView
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -202,7 +202,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7161197967094272035}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: UABS.Assets.Script.View.EntryInfoView, Assembly-CSharp
         m_MethodName: TriggerEvent
         m_Mode: 1
@@ -249,7 +249,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -223.90002, y: 15}
+  m_AnchoredPosition: {x: 97.099976, y: 15}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8051094953482623876
@@ -360,7 +360,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 262466337660820508}
-  - component: {fileID: 7161197967094272035}
+  - component: {fileID: 8861180673080926323}
   m_Layer: 5
   m_Name: Script
   m_TagString: Untagged
@@ -388,7 +388,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &7161197967094272035
+--- !u!114 &8861180673080926323
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -397,18 +397,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 6969223363995837037}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5730929e5f7de048bca74ce97dfb715, type: 3}
+  m_Script: {fileID: 11500000, guid: 56807327fc8f54747bd0d0dfd464d50c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _bg: {fileID: 1618457687704587267}
-  _highlightColor: {r: 0, g: 0.764151, b: 0.0060646674, a: 1}
+  _highlightColor: {r: 0, g: 0.7647059, b: 0.007843138, a: 1}
   _alternateColor1: {r: 0.93333334, g: 1, b: 0.9019608, a: 1}
   _alternateColor2: {r: 1, g: 1, b: 1, a: 1}
-  _assetType2IconData: {fileID: 11400000, guid: c40d3e1704282c442b94e7f1e8657806, type: 2}
+  _folderViewType2IconData: {fileID: 11400000, guid: 47debcd198a57a143a977717debf11a5, type: 2}
   _icon: {fileID: 1618457687200868755}
   _name: {fileID: 1618457688172602318}
-  _type: {fileID: 1789621391941767896}
-  _pathID: {fileID: 0}
+  _path: {fileID: 1789621391941767896}
 --- !u!1001 &3516174919010198872
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -532,6 +531,14 @@ PrefabInstance:
       propertyPath: m_fontSize
       value: 30
       objectReference: {fileID: 0}
+    - target: {fileID: 2791700450716059286, guid: 499d723b11dc04d418f9551f5d35cdcf, type: 3}
+      propertyPath: m_margin.z
+      value: -336.41046
+      objectReference: {fileID: 0}
+    - target: {fileID: 2791700450716059286, guid: 499d723b11dc04d418f9551f5d35cdcf, type: 3}
+      propertyPath: m_fontSizeMin
+      value: 28
+      objectReference: {fileID: 0}
     - target: {fileID: 7115675656366960063, guid: 499d723b11dc04d418f9551f5d35cdcf, type: 3}
       propertyPath: m_Name
       value: Text_Entry_Info
@@ -627,7 +634,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 353313392782007730, guid: 499d723b11dc04d418f9551f5d35cdcf, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -214
+      value: 107
       objectReference: {fileID: 0}
     - target: {fileID: 353313392782007730, guid: 499d723b11dc04d418f9551f5d35cdcf, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -676,6 +683,18 @@ PrefabInstance:
     - target: {fileID: 2791700450716059286, guid: 499d723b11dc04d418f9551f5d35cdcf, type: 3}
       propertyPath: m_fontSize
       value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 2791700450716059286, guid: 499d723b11dc04d418f9551f5d35cdcf, type: 3}
+      propertyPath: m_fontSizeMin
+      value: 24
+      objectReference: {fileID: 0}
+    - target: {fileID: 2791700450716059287, guid: 499d723b11dc04d418f9551f5d35cdcf, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 687.07007
+      objectReference: {fileID: 0}
+    - target: {fileID: 2791700450716059287, guid: 499d723b11dc04d418f9551f5d35cdcf, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 343.53494
       objectReference: {fileID: 0}
     - target: {fileID: 7115675656366960063, guid: 499d723b11dc04d418f9551f5d35cdcf, type: 3}
       propertyPath: m_Name

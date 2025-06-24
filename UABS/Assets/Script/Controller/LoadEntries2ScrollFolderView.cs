@@ -11,7 +11,7 @@ using UABS.Assets.Script.DataStruct;
 
 namespace UABS.Assets.Script.Controller
 {
-    public class LoadEntries2ScrollView : MonoBehaviour, IAppEventListener, IAppEnvironment
+    public class LoadEntries2ScrollFolderView : MonoBehaviour, IAppEventListener, IAppEnvironment
     {
         [SerializeField]
         private GameObject _content;
@@ -24,42 +24,43 @@ namespace UABS.Assets.Script.Controller
 
         private AppEnvironment _appEnvironment = null;
         public AppEnvironment AppEnvironment => _appEnvironment;
-        private List<EntryInfoView> _currEntryInfoViews = new();
+        private List<EntryFolderInfoView> _currEntryInfoViews = new();
 
         public void ClearAndLoadFolder()
         {
             ClearContentChildren();
         }
 
-        public void LoadBundle(List<AssetTextInfo> assetTextInfos)
+        
+        public void LoadFolder(List<FolderViewInfo> folderViewInfos)
         {
             for (int i = 0; i < _currEntryInfoViews.Count; i++)
             {
-                _currEntryInfoViews[i].AssignStuff(i, assetTextInfos.Count, _scrollbarRef);
-                _currEntryInfoViews[i].Render(assetTextInfos[i]);
+                _currEntryInfoViews[i].AssignStuff(i, folderViewInfos.Count, _scrollbarRef);
+                _currEntryInfoViews[i].Render(folderViewInfos[i]);
             }
         }
 
-        public void ClearAndLoadBundle(List<AssetTextInfo> assetTextInfos)
+        public void ClearAndLoadFolder(List<FolderViewInfo> folderViewInfos)
         {
             ClearContentChildren();
 
             _currEntryInfoViews = new();
-            for (int i = 0; i < assetTextInfos.Count; i++)
+            for (int i = 0; i < folderViewInfos.Count; i++)
             {
                 GameObject entryObj = CreateEntry();
                 entryObj.transform.SetParent(_content.transform, worldPositionStays: false);
-                _currEntryInfoViews.Add(entryObj.GetComponentInChildren<EntryInfoView>());
+                _currEntryInfoViews.Add(entryObj.GetComponentInChildren<EntryFolderInfoView>());
             }
 
-            for (int i = 0; i < assetTextInfos.Count; i++)
+            for (int i = 0; i < folderViewInfos.Count; i++)
             {
-                AssetTextInfo assetTextInfo = assetTextInfos[i];
-                EntryInfoView entryInfoView = _currEntryInfoViews[i];
+                FolderViewInfo folderViewInfo = folderViewInfos[i];
+                EntryFolderInfoView entryInfoView = _currEntryInfoViews[i];
                 entryInfoView.dispatcher = _appEnvironment.Dispatcher;
                 _appEnvironment.Dispatcher.Register(entryInfoView);
-                entryInfoView.AssignStuff(i, assetTextInfos.Count, _scrollbarRef);
-                entryInfoView.Render(assetTextInfo);
+                entryInfoView.AssignStuff(i, folderViewInfos.Count, _scrollbarRef);
+                entryInfoView.Render(folderViewInfo);
             }
         }
 
@@ -87,15 +88,15 @@ namespace UABS.Assets.Script.Controller
 
         public void OnEvent(AppEvent e)
         {
-            if (e is AssetsDisplayInfoEvent adie)
+            if (e is FolderViewInfosEvent fvie)
             {
-                if (adie.ClearCurrEntries)
+                if (fvie.ClearCurrEntries)
                 {
-                    ClearAndLoadBundle(adie.AssetsDisplayInfo.Select(x => x.assetTextInfo).ToList());
+                    ClearAndLoadFolder(fvie.FoldViewInfos);
                 }
                 else
                 {
-                    LoadBundle(adie.AssetsDisplayInfo.Select(x => x.assetTextInfo).ToList());
+                    LoadFolder(fvie.FoldViewInfos);
                 }
             }
         }

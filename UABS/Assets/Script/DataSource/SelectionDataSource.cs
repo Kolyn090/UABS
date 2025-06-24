@@ -21,9 +21,9 @@ namespace UABS.Assets.Script.DataSource
 
         public void OnEvent(AppEvent e)
         {
-            if (e is SelectionEvent pie)
+            if (e is AssetSelectionEvent ase)
             {
-                _lastPathID = pie.PathID;
+                _lastPathID = ase.PathID;
             }
             else if (e is AssetsDisplayInfoEvent adie)
             {
@@ -34,13 +34,13 @@ namespace UABS.Assets.Script.DataSource
         public void Prev()
         {
             int index = StayInRange(FindIndexOfLastPathID() - 1);
-            AppEnvironment.Dispatcher.Dispatch(new SelectionEvent(_currBunPathIDs[index], index, _currBunPathIDs.Count, true));
+            AppEnvironment.Dispatcher.Dispatch(new AssetSelectionEvent(_currBunPathIDs[index], index, _currBunPathIDs.Count, true));
         }
 
         public void Next()
         {
             int index = StayInRange(FindIndexOfLastPathID() + 1);
-            AppEnvironment.Dispatcher.Dispatch(new SelectionEvent(_currBunPathIDs[index], index, _currBunPathIDs.Count, true));
+            AppEnvironment.Dispatcher.Dispatch(new AssetSelectionEvent(_currBunPathIDs[index], index, _currBunPathIDs.Count, true));
         }
 
         private int FindIndexOfLastPathID()

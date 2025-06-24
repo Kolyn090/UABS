@@ -7,6 +7,7 @@ using UABS.Assets.Script.Event;
 using UABS.Assets.Script.Misc;
 using UABS.Assets.Script.Dispatcher;
 using UABS.Assets.Script.EventListener;
+using UABS.Assets.Script.DataStruct;
 
 namespace UABS.Assets.Script.View
 {
@@ -37,25 +38,28 @@ namespace UABS.Assets.Script.View
         [SerializeField]
         private TextMeshProUGUI _pathID;
 
-        private AssetTextInfo _storedInfo;
+        private AssetTextInfo _storedAssetInfo;
 
         public EventDispatcher dispatcher = null;
         private Scrollbar _scrollbarRef;
 
         private int _index;
         private int _totalEntryNum;
-
+        
         public void TriggerEvent()
         {
             if (dispatcher != null)
             {
-                dispatcher.Dispatch(new AssetTextInfoEvent(_storedInfo));
-                dispatcher.Dispatch(new SelectionEvent(_storedInfo.pathID, _index, _totalEntryNum));
+                if (_assetType2IconData != null)
+                {
+                    dispatcher.Dispatch(new AssetTextInfoEvent(_storedAssetInfo));
+                    dispatcher.Dispatch(new AssetSelectionEvent(_storedAssetInfo.pathID, _index, _totalEntryNum));
+                }
             }
-            else
-            {
-                throw new System.Exception("Entry Info View missing dispatcher. Please assign first.");
-            }
+                else
+                {
+                    throw new System.Exception("Entry Info View missing dispatcher. Please assign first.");
+                }
         }
 
         public void AssignStuff(int index, int totalEntryNum, Scrollbar scrollbar)
@@ -67,7 +71,7 @@ namespace UABS.Assets.Script.View
 
         public void Render(AssetTextInfo assetTextInfo)
         {
-            _storedInfo = assetTextInfo;
+            _storedAssetInfo = assetTextInfo;
             _bg.color = _index % 2 == 0 ? _alternateColor1 : _alternateColor2;
             AssetClassID assetType = assetTextInfo.type;
             long pathID = assetTextInfo.pathID;
@@ -95,9 +99,9 @@ namespace UABS.Assets.Script.View
 
         public void OnEvent(AppEvent e)
         {
-            if (e is SelectionEvent pie)
+            if (e is AssetSelectionEvent ase)
             {
-                if (_storedInfo.pathID == pie.PathID)
+                if (_storedAssetInfo.pathID == ase.PathID)
                 {
                     if (_bg.color != _highlightColor)
                     {
@@ -107,9 +111,9 @@ namespace UABS.Assets.Script.View
                     {
                         _bg.color = _index % 2 == 0 ? _alternateColor1 : _alternateColor2;
                     }
-                    if (pie.UseJump)
+                    if (ase.UseJump)
                         Jump2Me();
-                    dispatcher.Dispatch(new AssetTextInfoEvent(_storedInfo));
+                    dispatcher.Dispatch(new AssetTextInfoEvent(_storedAssetInfo));
                 }
                 else
                 {

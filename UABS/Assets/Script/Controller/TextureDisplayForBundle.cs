@@ -35,12 +35,12 @@ namespace UABS.Assets.Script.Controller
                 _currBunInst = bre.Bundle;
                 _cacheTextureByPathID = new();
             }
-            else if (e is SelectionEvent pie)
+            else if (e is AssetSelectionEvent ase)
             {
-                Texture2DWithMeta textureWithMeta = GetTextureByPathID(pie.PathID);
+                Texture2DWithMeta textureWithMeta = GetTextureByPathID(ase.PathID);
                 _textureView.AssignSizeText($"{textureWithMeta.rect.width}x{textureWithMeta.rect.height} ({textureWithMeta.compressionFormat})");
                 _textureView.Render(textureWithMeta.texture2D);
-                _textureView.AssignIndexText($"{pie.CurrIndex+1} / {pie.TotalNumOfAssets}");
+                _textureView.AssignIndexText($"{ase.CurrIndex+1} / {ase.TotalNumOfAssets}");
             }
         }
 
