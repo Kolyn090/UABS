@@ -598,6 +598,9 @@ namespace UABS.Assets.Script.Reader
         {
             switch (unityFormat)
             {
+                case TextureFormat.RGBA32:
+                    format = CompressionFormat.Rgba;
+                    return true;
                 case TextureFormat.DXT1:
                     format = CompressionFormat.Bc1;
                     return true;
