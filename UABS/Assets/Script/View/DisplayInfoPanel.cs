@@ -1,6 +1,7 @@
 using UnityEngine;
 using UABS.Assets.Script.Event;
 using TMPro;
+using System.IO;
 
 namespace UABS.Assets.Script.EventListener
 {
@@ -30,6 +31,17 @@ namespace UABS.Assets.Script.EventListener
                 _fileIDField.text = assetTextInfoEvent.Info.fileID.ToString();
                 _sizeField.text = $"{assetTextInfoEvent.Info.compressedSize} ({assetTextInfoEvent.Info.uncompressedSize})";
                 _pathField.text = assetTextInfoEvent.Info.path;
+            }
+            else if (e is FolderReadEvent fre)
+            {
+                if (Directory.Exists(fre.FolderPath))
+                {
+                    _nameField.text = "";
+                    _pathIDField.text = "";
+                    _fileIDField.text = "";
+                    _sizeField.text = "";
+                    _pathField.text = "";
+                }
             }
         }
     }

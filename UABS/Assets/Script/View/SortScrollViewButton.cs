@@ -1,8 +1,10 @@
+using System.IO;
 using TMPro;
 using UABS.Assets.Script.DataStruct;
 using UABS.Assets.Script.Event;
 using UABS.Assets.Script.EventListener;
 using UABS.Assets.Script.Misc;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 namespace UABS.Assets.Script.View
@@ -37,9 +39,9 @@ namespace UABS.Assets.Script.View
             // Type + next
             string nextOrderString = "";
             if (nextOrder == SortOrder.Up)
-                nextOrderString = "▲";
-            else if (nextOrder == SortOrder.Down)
                 nextOrderString = "▼";
+            else if (nextOrder == SortOrder.Down)
+                nextOrderString = "▲";
             return $"{_sortByType} {nextOrderString}";
         }
 
@@ -71,6 +73,13 @@ namespace UABS.Assets.Script.View
             if (e is SortScrollViewEvent ssve)
             {
                 if (_sortByType != ssve.SortProp.sortByType)
+                {
+                    _text.text = GetNextText(SortOrder.None);
+                }
+            }
+            else if (e is FolderReadEvent fre)
+            {
+                if (Directory.Exists(fre.FolderPath))
                 {
                     _text.text = GetNextText(SortOrder.None);
                 }

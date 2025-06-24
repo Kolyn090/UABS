@@ -7,6 +7,8 @@ using UABS.Assets.Script.Misc;
 using AssetsTools.NET.Extra;
 using System.Collections.Generic;
 using UABS.Assets.Script.DataStruct;
+using UnityEditor.Experimental.GraphView;
+using System.IO;
 
 namespace UABS.Assets.Script.Controller
 {
@@ -40,7 +42,16 @@ namespace UABS.Assets.Script.Controller
                 Texture2DWithMeta textureWithMeta = GetTextureByPathID(ase.PathID);
                 _textureView.AssignSizeText($"{textureWithMeta.rect.width}x{textureWithMeta.rect.height} ({textureWithMeta.compressionFormat})");
                 _textureView.Render(textureWithMeta.texture2D);
-                _textureView.AssignIndexText($"{ase.CurrIndex+1} / {ase.TotalNumOfAssets}");
+                _textureView.AssignIndexText($"{ase.CurrIndex + 1} / {ase.TotalNumOfAssets}");
+            }
+            else if (e is FolderReadEvent fre)
+            {
+                if (Directory.Exists(fre.FolderPath))
+                {
+                    _textureView.AssignSizeText("");
+                    _textureView.Render(null);
+                    _textureView.AssignIndexText("");
+                }
             }
         }
 

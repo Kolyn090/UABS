@@ -18,7 +18,8 @@ namespace UABS.Assets.Script.View
         public void Render(Texture2D texture)
         {
             _rawImage.texture = texture;
-            texture.filterMode = FilterMode.Point;
+            if (texture != null)
+                texture.filterMode = FilterMode.Point;
         }
 
         public void AssignIndexText(string text)

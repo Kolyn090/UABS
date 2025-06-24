@@ -86,7 +86,7 @@ namespace UABS.Assets.Script.Reader
             int indexInAssets = GetIndexInAssets();
             if (indexInAssets == -1)
             {
-                Debug.LogWarning($"The given path id {pathID} is not found in sprites.");
+                // Debug.LogWarning($"The given path id {pathID} is not found in sprites."); // * Silent Warning
                 return null;
             }
 
@@ -124,7 +124,7 @@ namespace UABS.Assets.Script.Reader
                 if (IsSupportedBCnFormat((TextureFormat)textureFormat, out CompressionFormat bcnFormat))
                 {
                     var decoder = new BcDecoder();
-                    ColorRgba32[] decoded = decoder.DecodeRaw(imageBytes, textureWidth, textureHeight, CompressionFormat.Bc7);
+                    ColorRgba32[] decoded = decoder.DecodeRaw(imageBytes, textureWidth, textureHeight, bcnFormat);
 
                     byte[] rgbaBytes = new byte[decoded.Length * 4];
                     MemoryMarshal.Cast<ColorRgba32, byte>(decoded.AsSpan()).CopyTo(rgbaBytes);
@@ -146,7 +146,7 @@ namespace UABS.Assets.Script.Reader
                 }
                 else if (imageBytes.Length == textureWidth * textureHeight * textureFormat)
                 {
-                    TextureFormat unityFormat = TextureFormat.RGBA32;
+                    TextureFormat unityFormat = (TextureFormat) textureFormat;
                     Texture2D texture = new(textureWidth, textureHeight, unityFormat, false);
                     texture.LoadRawTextureData(imageBytes);
                     texture.filterMode = FilterMode.Point;
@@ -185,7 +185,7 @@ namespace UABS.Assets.Script.Reader
                 if (IsSupportedBCnFormat((TextureFormat)textureFormat, out CompressionFormat bcnFormat))
                 {
                     var decoder = new BcDecoder();
-                    ColorRgba32[] decoded = decoder.DecodeRaw(imageBytes, textureWidth, textureHeight, CompressionFormat.Bc7);
+                    ColorRgba32[] decoded = decoder.DecodeRaw(imageBytes, textureWidth, textureHeight, bcnFormat);
 
                     byte[] rgbaBytes = new byte[decoded.Length * 4];
                     MemoryMarshal.Cast<ColorRgba32, byte>(decoded.AsSpan()).CopyTo(rgbaBytes);
@@ -207,7 +207,7 @@ namespace UABS.Assets.Script.Reader
                 }
                 else if (imageBytes.Length == textureWidth * textureHeight * textureFormat)
                 {
-                    TextureFormat unityFormat = TextureFormat.RGBA32;
+                    TextureFormat unityFormat = (TextureFormat)textureFormat;
                     Texture2D texture = new(textureWidth, textureHeight, unityFormat, false);
                     texture.LoadRawTextureData(imageBytes);
                     texture.filterMode = FilterMode.Point;
@@ -268,7 +268,7 @@ namespace UABS.Assets.Script.Reader
             if (IsSupportedBCnFormat((TextureFormat)format, out CompressionFormat bcnFormat))
             {
                 var decoder = new BcDecoder();
-                ColorRgba32[] decoded = decoder.DecodeRaw(imageBytes, width, height, CompressionFormat.Bc7);
+                ColorRgba32[] decoded = decoder.DecodeRaw(imageBytes, width, height, bcnFormat);
 
                 byte[] rgbaBytes = new byte[decoded.Length * 4];
                 MemoryMarshal.Cast<ColorRgba32, byte>(decoded.AsSpan()).CopyTo(rgbaBytes);
@@ -289,7 +289,7 @@ namespace UABS.Assets.Script.Reader
             }
             else if (imageBytes.Length == width * height * format)
             {
-                TextureFormat unityFormat = TextureFormat.RGBA32;
+                TextureFormat unityFormat = (TextureFormat)format;
                 Texture2D texture = new(width, height, unityFormat, false);
                 texture.LoadRawTextureData(imageBytes);
                 texture.filterMode = FilterMode.Point;
