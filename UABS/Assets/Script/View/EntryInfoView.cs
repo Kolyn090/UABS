@@ -90,7 +90,7 @@ namespace UABS.Assets.Script.View
 
             _type.text = className;
             _pathID.text = pathID.ToString();
-            Debug.Log($"{_name.text}");
+            // Debug.Log($"{_name.text}");
         }
 
         public void OnEvent(AppEvent e)

@@ -7,9 +7,12 @@ namespace UABS.Assets.Script.Event
     {
         public List<AssetDisplayInfo> AssetsDisplayInfo { get; }
 
-        public AssetsDisplayInfoEvent(List<AssetDisplayInfo> info)
+        public bool ClearCurrEntries { get; }
+
+        public AssetsDisplayInfoEvent(List<AssetDisplayInfo> info, bool clearCurrentEntries = true)
         {
             AssetsDisplayInfo = info;
+            ClearCurrEntries = clearCurrentEntries;
         }
     }
 }

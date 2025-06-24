@@ -41,7 +41,7 @@ namespace UABS.Assets.Script.DataSource
                 SortByType sortByType = ssve.SortProp.sortByType;
                 SortOrder sortOrder = ssve.SortProp.sortOrder;
                 _assetsDisplayInfo = SortedAssetsDisplayInfo(sortByType, sortOrder);
-                _appEnvironment.Dispatcher.Dispatch(new AssetsDisplayInfoEvent(_assetsDisplayInfo));
+                _appEnvironment.Dispatcher.Dispatch(new AssetsDisplayInfoEvent(_assetsDisplayInfo, false));
             }
         }
 

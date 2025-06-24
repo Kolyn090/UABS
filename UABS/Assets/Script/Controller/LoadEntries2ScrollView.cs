@@ -30,9 +30,13 @@ namespace UABS.Assets.Script.Controller
             ClearContentChildren();
         }
 
-        public void LoadBundle()
+        public void LoadBundle(List<AssetTextInfo> assetTextInfos)
         {
-            
+            for (int i = 0; i < _currEntryInfoViews.Count; i++)
+            {
+                _currEntryInfoViews[i].AssignStuff(i, assetTextInfos.Count, _scrollbarRef);
+                _currEntryInfoViews[i].Render(assetTextInfos[i]);
+            }
         }
 
         public void ClearAndLoadBundle(List<AssetTextInfo> assetTextInfos)
@@ -84,7 +88,14 @@ namespace UABS.Assets.Script.Controller
         {
             if (e is AssetsDisplayInfoEvent adie)
             {
-                ClearAndLoadBundle(adie.AssetsDisplayInfo.Select(x => x.assetTextInfo).ToList());
+                if (adie.ClearCurrEntries)
+                {
+                    ClearAndLoadBundle(adie.AssetsDisplayInfo.Select(x => x.assetTextInfo).ToList());
+                }
+                else
+                {
+                    LoadBundle(adie.AssetsDisplayInfo.Select(x => x.assetTextInfo).ToList());
+                }
             }
         }
 
