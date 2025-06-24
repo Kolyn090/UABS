@@ -8,31 +8,33 @@ namespace UABS.Assets.Script.UI
     {
         [SerializeField]
         public RectTransform dropdownPanel;
-        private bool isPointerInside = false;
+        private bool _isPointerInside = false;
+
+        [SerializeField]
+        private bool _shouldHideDropDown = true;
 
         private void Start()
         {
-            dropdownPanel.gameObject.SetActive(false);
+            dropdownPanel.gameObject.SetActive(!_shouldHideDropDown);
         }
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            isPointerInside = true;
+            _isPointerInside = true;
             dropdownPanel.gameObject.SetActive(true);
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            isPointerInside = false;
+            _isPointerInside = false;
             StartCoroutine(HideAfterDelay());
         }
 
         private System.Collections.IEnumerator HideAfterDelay()
         {
             yield return new WaitForSeconds(0.2f);
-            if (!isPointerInside)
-                dropdownPanel.gameObject.SetActive(false);
+            if (!_isPointerInside)
+                dropdownPanel.gameObject.SetActive(!_shouldHideDropDown);
         }
     }
-
 }

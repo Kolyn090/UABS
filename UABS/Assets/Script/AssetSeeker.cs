@@ -27,7 +27,7 @@ public class AssetSeeker : MonoBehaviour
     }
 
     private const string GameData = @"\\?\C:\Program Files (x86)\Steam\steamapps\common\Otherworld Legends\Otherworld Legends_Data\StreamingAssets\aa\StandaloneWindows64";
-    private const string SurfCache = "Assets/UABS_Cache";
+    private const string SurfCache = "External/UABS_Cache";
     private void Start()
     {
         // List<string> paths = SurfFilesUnderDirExcludeMeta("Assets/TestBundles");

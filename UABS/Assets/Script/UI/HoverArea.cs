@@ -7,7 +7,7 @@ namespace UABS.Assets.Script.UI
     {
         public HoverDropdown parentDropdown;
 
-        public void OnPointerEnter(PointerEventData eventData)
+        public virtual void OnPointerEnter(PointerEventData eventData)
         {
             parentDropdown.SendMessage("OnPointerEnter", eventData);
         }

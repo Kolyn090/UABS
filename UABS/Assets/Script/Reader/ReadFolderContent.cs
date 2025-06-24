@@ -10,12 +10,12 @@ namespace UABS.Assets.Script.Reader
         public List<FolderViewInfo> ReadAllReadable(string directory)
         {
             List<FolderViewInfo> result = new();
-            result.AddRange(ReadAllDirectory(directory));
-            result.AddRange(ReadAllBundle(directory));
+            result.AddRange(ReadAllTopDirectory(directory));
+            result.AddRange(ReadAllTopBundle(directory));
             return result;
         }
 
-        public List<FolderViewInfo> ReadAllDirectory(string directory)
+        public List<FolderViewInfo> ReadAllTopDirectory(string directory)
         {
             List<FolderViewInfo> result = new();
             string[] allFolders = Directory.GetDirectories(directory, "*", SearchOption.TopDirectoryOnly);
@@ -32,7 +32,7 @@ namespace UABS.Assets.Script.Reader
             return result;
         }
 
-        public List<FolderViewInfo> ReadAllBundle(string directory)
+        public List<FolderViewInfo> ReadAllTopBundle(string directory)
         {
             List<FolderViewInfo> result = new();
             string[] allFiles = Directory.GetFiles(directory, "*.*", SearchOption.TopDirectoryOnly);
