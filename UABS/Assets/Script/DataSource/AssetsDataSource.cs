@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using AssetsTools.NET.Extra;
@@ -8,6 +9,7 @@ using UABS.Assets.Script.Event;
 using UABS.Assets.Script.EventListener;
 using UABS.Assets.Script.Misc;
 using UABS.Assets.Script.Reader;
+using UABS.Assets.Script.Writer;
 using UnityEngine;
 
 namespace UABS.Assets.Script.DataSource
@@ -17,6 +19,7 @@ namespace UABS.Assets.Script.DataSource
         private BundleFileInstance _currBunInst;
         private List<AssetDisplayInfo> _assetsDisplayInfo = new();
         private ReadTextInfoFromBundle _readTextInfoFromBundle;
+        private WriteTextureAsImage2Path _writeTextureAsImage2Path;
         private AppEnvironment _appEnvironment = null;
         public AppEnvironment AppEnvironment => _appEnvironment;
 
@@ -42,6 +45,12 @@ namespace UABS.Assets.Script.DataSource
                 SortOrder sortOrder = ssve.SortProp.sortOrder;
                 _assetsDisplayInfo = SortedAssetsDisplayInfo(sortByType, sortOrder);
                 _appEnvironment.Dispatcher.Dispatch(new AssetsDisplayInfoEvent(_assetsDisplayInfo, false));
+            }
+            else if (e is ExportAssetsEvent eae)
+            {
+                ExportMethod exportMethod = eae.ExportMethod;
+                if (exportMethod.exportType == ExportType.All)
+                    _writeTextureAsImage2Path.ExportAllAssetsToPath(exportMethod, _assetsDisplayInfo, _currBunInst);
             }
         }
 
@@ -118,6 +127,7 @@ namespace UABS.Assets.Script.DataSource
         {
             _appEnvironment = appEnvironment;
             _readTextInfoFromBundle = new(_appEnvironment.AssetsManager);
+            _writeTextureAsImage2Path = new(_appEnvironment.AssetsManager);
         }
 
         public AssetDisplayInfo GetDisplayInfoAtIndex(int index)

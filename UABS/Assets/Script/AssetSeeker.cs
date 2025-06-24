@@ -22,11 +22,12 @@ public class AssetSeeker : MonoBehaviour
     {
         public string Name { get; set; }
         public string Path { get; set; }
+        public string CABcode { get; set; }
         public List<SpriteInfo> SpriteInfos { get; set; }
     }
 
     private const string GameData = @"\\?\C:\Program Files (x86)\Steam\steamapps\common\Otherworld Legends\Otherworld Legends_Data\StreamingAssets\aa\StandaloneWindows64";
-    private const string SurfCache = "Assets/UABSCache";
+    private const string SurfCache = "Assets/UABS_Cache";
     private void Start()
     {
         // List<string> paths = SurfFilesUnderDirExcludeMeta("Assets/TestBundles");
@@ -67,6 +68,7 @@ public class AssetSeeker : MonoBehaviour
                 Bundle bundle = new();
                 bundle.Path = fileInPath;
                 bundle.Name = Path.GetFileName(fileInPath);
+                bundle.CABcode = ReadCABCode(fileInPath);
 
                 // --- Sprites ---
                 // Debug.Log(fileInPath);
@@ -148,29 +150,47 @@ public class AssetSeeker : MonoBehaviour
         return result;
     }
 
-    private string ReadCABCode(string bundlePath)
+    public static string ReadCABCode(string bundlePath)
     {
         using var fs = new FileStream(bundlePath, FileMode.Open, FileAccess.Read);
         using var br = new BinaryReader(fs);
 
-        // Skip header, find the CAB string
         byte[] buffer = new byte[fs.Length];
         br.Read(buffer, 0, buffer.Length);
 
-        string fullText = Encoding.UTF8.GetString(buffer);
-        int index = fullText.IndexOf("CAB-");
-        if (index >= 0)
-        {
-            int end = index;
-            while (end < fullText.Length && !char.IsWhiteSpace(fullText[end]))
-                end++;
+        byte[] cabPrefix = Encoding.ASCII.GetBytes("CAB-");
 
-            string cab = fullText.Substring(index, end - index);
-            return "CAB code: " + cab;
-        }
-        else
+        for (int i = 0; i <= buffer.Length - cabPrefix.Length; i++)
         {
-            return "";
+            bool match = true;
+            for (int j = 0; j < cabPrefix.Length; j++)
+            {
+                if (buffer[i + j] != cabPrefix[j])
+                {
+                    match = false;
+                    break;
+                }
+            }
+
+            if (match)
+            {
+                int start = i;
+                int end = start;
+
+                // Read until whitespace or non-printable ASCII
+                while (end < buffer.Length)
+                {
+                    byte b = buffer[end];
+                    if (b < 0x21 || b > 0x7E) // non-printable ASCII
+                        break;
+                    end++;
+                }
+
+                string cab = Encoding.ASCII.GetString(buffer, start, end - start - 1);
+                return cab;
+            }
         }
+
+        return "";
     }
 }

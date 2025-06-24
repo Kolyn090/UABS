@@ -6,6 +6,6 @@ namespace UABS.Assets.Script.DataStruct
     public class AssetDisplayInfo
     {
         public AssetTextInfo assetTextInfo;
-        public Texture shownImage = null;
+        public Texture2D shownImage = null;
     }
 }
