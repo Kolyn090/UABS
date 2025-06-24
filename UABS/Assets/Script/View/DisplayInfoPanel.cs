@@ -43,6 +43,14 @@ namespace UABS.Assets.Script.EventListener
                     _pathField.text = "";
                 }
             }
+            else if (e is BundleReadEvent)
+            {
+                _nameField.text = "";
+                _pathIDField.text = "";
+                _fileIDField.text = "";
+                _sizeField.text = "";
+                _pathField.text = "";
+            }
         }
     }
 }

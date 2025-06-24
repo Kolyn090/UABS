@@ -16,7 +16,7 @@ namespace UABS.Assets.Script.Reader
 
         public BundleFileInstance ReadBundle(string path)
         {
-            BundleFileInstance bunInst = _appEnvironment.AssetsManager.LoadBundleFile(path, true);
+            BundleFileInstance bunInst = _appEnvironment.AssetsManager.LoadBundleFile(@path, true);
             _appEnvironment.Dispatcher.Dispatch(new BundleReadEvent(bunInst, path));
             return bunInst;
         }

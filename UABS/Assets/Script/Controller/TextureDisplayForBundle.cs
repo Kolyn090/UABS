@@ -36,6 +36,9 @@ namespace UABS.Assets.Script.Controller
             {
                 _currBunInst = bre.Bundle;
                 _cacheTextureByPathID = new();
+                _textureView.AssignSizeText("");
+                _textureView.Render(null);
+                _textureView.AssignIndexText("");
             }
             else if (e is AssetSelectionEvent ase)
             {
