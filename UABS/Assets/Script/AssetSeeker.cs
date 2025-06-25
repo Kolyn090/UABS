@@ -8,6 +8,7 @@ using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Linq;
+using UABS.Assets.Script.Misc;
 
 
 public class AssetSeeker : MonoBehaviour
@@ -27,20 +28,9 @@ public class AssetSeeker : MonoBehaviour
     }
 
     private const string GameData = @"\\?\C:\Program Files (x86)\Steam\steamapps\common\Otherworld Legends\Otherworld Legends_Data\StreamingAssets\aa\StandaloneWindows64";
-    private const string SurfCache = "External/UABS_Cache";
+    private const string SurfCache = PredefinedPaths.ExternalCache;
     private void Start()
     {
-        // List<string> paths = SurfFilesUnderDirExcludeMeta("Assets/TestBundles");
-        // foreach (string path in paths)
-        // {
-        //     Debug.Log(ReadCABCode(path));
-        //     List<(long, string)> pathIDNameOfSprites = GetPathIDNameOfSpritesInBundle(path);
-        //     foreach (var item in pathIDNameOfSprites)
-        //     {
-        //         Debug.Log(item);
-        //     }
-        // }
-
         if (!Directory.Exists(SurfCache))
         {
             Directory.CreateDirectory(SurfCache);
@@ -50,7 +40,7 @@ public class AssetSeeker : MonoBehaviour
 
     private void BuildCache(string cacheFolder)
     {
-        List<string> paths = SurfFoldersUnderDirExcludeMeta(GameData);
+        List<string> paths = SurfFoldersUnderAllDir(GameData);
         foreach (string path in paths)
         {
             string basePath = path.Replace(GameData, "");
@@ -61,7 +51,7 @@ public class AssetSeeker : MonoBehaviour
                 Directory.CreateDirectory(newPath);
             }
             List<Bundle> writeToIndex = new();
-            List<string> filesInPath = SurfFilesUnderDirExcludeMetaTopDirOnly(path);
+            List<string> filesInPath = SurfFilesUnderTopDir(path);
             // Create Bundle objects
             foreach (string fileInPath in filesInPath)
             {
@@ -81,7 +71,7 @@ public class AssetSeeker : MonoBehaviour
         }
     }
 
-    private List<string> SurfFoldersUnderDirExcludeMeta(string directory)
+    private List<string> SurfFoldersUnderAllDir(string directory)
     {
         List<string> result = new();
         string[] allFolders = Directory.GetDirectories(directory, "*", SearchOption.AllDirectories);
@@ -95,21 +85,7 @@ public class AssetSeeker : MonoBehaviour
         return result;
     }
 
-    private List<string> SurfFilesUnderDirExcludeMeta(string directory)
-    {
-        List<string> result = new();
-        string[] allFiles = Directory.GetFiles(directory, "*.*", SearchOption.AllDirectories);
-
-        foreach (string file in allFiles)
-        {
-            if (file.EndsWith(".bundle"))
-                result.Add(file);
-        }
-
-        return result;
-    }
-
-    private List<string> SurfFilesUnderDirExcludeMetaTopDirOnly(string directory)
+    private List<string> SurfFilesUnderTopDir(string directory)
     {
         List<string> result = new();
         string[] allFiles = Directory.GetFiles(directory, "*.*", SearchOption.TopDirectoryOnly);

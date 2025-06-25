@@ -223,7 +223,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7037611140069583422}
-  - component: {fileID: 6328221620862753496}
+  - component: {fileID: 2381469226324699132}
   m_Layer: 5
   m_Name: Script
   m_TagString: Untagged
@@ -251,7 +251,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &6328221620862753496
+--- !u!114 &2381469226324699132
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -260,7 +260,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8510229523994712917}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a385dd8a2837d145948ef987694a4ca, type: 3}
+  m_Script: {fileID: 11500000, guid: 20267c3be57f75c42a8978f85bcaaecc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _text: {fileID: 7199850867537197658}
@@ -385,7 +385,20 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8554429214971283969}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2381469226324699132}
+        m_TargetAssemblyTypeName: UABS.Assets.Script.View.MenuScrollEntryRemove,
+          Assembly-CSharp
+        m_MethodName: ClickButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &8554429215148214670
 GameObject:
   m_ObjectHideFlags: 0

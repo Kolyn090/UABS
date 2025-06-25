@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using SFB;
 using UABS.Assets.Script.DropdownOptions.Dependency;
 using UABS.Assets.Script.Event;
 using UABS.Assets.Script.Misc;
@@ -10,10 +9,11 @@ using UABS.Assets.Script.UI;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UABS.Assets.Script.EventListener;
 
 namespace UABS.Assets.Script.DropdownOptions
 {
-    public class HoverCacheDepDerive : HoverArea, IAppEnvironment
+    public class HoverCacheDepDerive : HoverArea, IAppEnvironment, IAppEventListener
     {
         private AppEnvironment _appEnvironment = null;
         public AppEnvironment AppEnvironment => _appEnvironment;
@@ -26,7 +26,7 @@ namespace UABS.Assets.Script.DropdownOptions
 
         private ReadExternalCache _readExternalCache;
 
-        private List<IMenuScrollEntry> _menuScrollEntries = new();
+        private List<(string, GameObject)> _entries = new();
 
         [SerializeField]
         private Color _hoverColor;
@@ -47,14 +47,14 @@ namespace UABS.Assets.Script.DropdownOptions
         {
             base.OnPointerEnter(eventData);
             _bgImage.color = _hoverColor;
-            if (_menuScrollEntries.Count != 0)
+            if (_entries.Count != 0)
                 return;
             // Search paths and create prefabs
             List<string> paths = _readExternalCache.GetCacheFoldersInExternal();
             foreach (string path in paths)
             {
                 (IMenuScrollEntry, GameObject) pair = CreateScrollEntry(Path.GetFileName(path));
-                _menuScrollEntries.Add(pair.Item1);
+                _entries.Add((pair.Item1.ShortPath, pair.Item2));
                 pair.Item2.GetComponent<RectTransform>().SetParent(_content.transform, worldPositionStays: false);
             }
         }
@@ -71,8 +71,29 @@ namespace UABS.Assets.Script.DropdownOptions
             IMenuScrollEntry menuScrollEntry = entry.GetComponentsInChildren<MonoBehaviour>(true)
                                                 .OfType<IMenuScrollEntry>()
                                                 .FirstOrDefault();
-            menuScrollEntry.AssignText(path);
+            menuScrollEntry.ShortPath = path;
+            menuScrollEntry.AssignDispatcher(AppEnvironment.Dispatcher);
             return (menuScrollEntry, entry);
+        }
+
+        public void OnEvent(AppEvent e)
+        {
+            if (e is CacheRemoveEvent cre)
+            {
+                GameObject entryToRemove = null;
+                foreach (var pair in _entries)
+                {
+                    if (pair.Item1 == cre.RemovedPath)
+                    {
+                        entryToRemove = pair.Item2;
+                    }
+                }
+                if (entryToRemove == null)
+                    return;
+
+                Destroy(entryToRemove);
+                entryToRemove = null;
+            }
         }
     }
 }
