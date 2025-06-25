@@ -254,7 +254,7 @@ namespace UABS.Assets.Script.Reader
             int indexInAssets = GetIndexInAssets();
             if (indexInAssets == -1)
             {
-                Debug.LogError($"The given path id {pathID} is not found in textures.");
+                Debug.LogWarning($"The given path id {pathID} is not found in textures.");
                 return null;
             }
 

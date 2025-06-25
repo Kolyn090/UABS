@@ -2,6 +2,7 @@ using AssetsTools.NET;
 using AssetsTools.NET.Extra;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using UABS.Assets.Script.Misc;
@@ -20,22 +21,28 @@ namespace UABS.Assets.Script.Reader
         public List<AssetTextInfo> ReadAllBasicInfo(BundleFileInstance bunInst)
         {
             List<AssetTextInfo> result = new();
-            result.AddRange(ReadSpritesBasicInfo(bunInst));
-            result.AddRange(ReadTexture2DBasicInfo(bunInst));
+            // result.AddRange(ReadSpritesBasicInfo(bunInst));
+            // result.AddRange(ReadTexture2DBasicInfo(bunInst));
+            AssetsFileInstance fileInst = AssetsManager.LoadAssetsFileFromBundle(bunInst, 0, false);
+            foreach (AssetClassID classId in Enum.GetValues(typeof(AssetClassID)))
+            {
+                result.AddRange(ReadBasicInfoOf(classId, fileInst, AssetsManager));
+            }
+
             return result;
         }
 
-        public List<AssetTextInfo> ReadSpritesBasicInfo(BundleFileInstance bunInst)
-        {
-            AssetsFileInstance fileInst = AssetsManager.LoadAssetsFileFromBundle(bunInst, 0, false);
-            return ReadBasicInfoOf(AssetClassID.Sprite, fileInst, AssetsManager);
-        }
+        // public List<AssetTextInfo> ReadSpritesBasicInfo(BundleFileInstance bunInst)
+        // {
+        //     AssetsFileInstance fileInst = AssetsManager.LoadAssetsFileFromBundle(bunInst, 0, false);
+        //     return ReadBasicInfoOf(AssetClassID.Sprite, fileInst, AssetsManager);
+        // }
 
-        public List<AssetTextInfo> ReadTexture2DBasicInfo(BundleFileInstance bunInst)
-        {
-            AssetsFileInstance fileInst = AssetsManager.LoadAssetsFileFromBundle(bunInst, 0, false);
-            return ReadBasicInfoOf(AssetClassID.Texture2D, fileInst, AssetsManager);
-        }
+        // public List<AssetTextInfo> ReadTexture2DBasicInfo(BundleFileInstance bunInst)
+        // {
+        //     AssetsFileInstance fileInst = AssetsManager.LoadAssetsFileFromBundle(bunInst, 0, false);
+        //     return ReadBasicInfoOf(AssetClassID.Texture2D, fileInst, AssetsManager);
+        // }
 
         private static List<AssetTextInfo> ReadBasicInfoOf(AssetClassID assetType,
                                                                 AssetsFileInstance fileInst,
@@ -87,6 +94,10 @@ namespace UABS.Assets.Script.Reader
                     return (int)assetInfo.ByteSize;
                 }
             }
+            bool HasField(AssetTypeValueField parent, string fieldName)
+            {
+                return parent.Children.Any(child => child.FieldName == fieldName);
+            }
 
             List<AssetTextInfo> result = new();
             List<AssetFileInfo> assets = fileInst.file.GetAssetsOfType(assetType);
@@ -101,7 +112,7 @@ namespace UABS.Assets.Script.Reader
 
                 // To get the asset name:
                 AssetTypeValueField baseField = am.GetBaseField(fileInst, asset);
-                string name = baseField["m_Name"].AsString;
+                string name = HasField(baseField, "m_Name") ? baseField["m_Name"].AsString : "Unnamed asset";
                 result.Add(new()
                 {
                     name = name,

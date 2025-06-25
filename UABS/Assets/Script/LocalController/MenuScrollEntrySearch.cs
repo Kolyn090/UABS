@@ -1,8 +1,8 @@
+using System.IO;
 using TMPro;
 using UABS.Assets.Script.Dispatcher;
 using UABS.Assets.Script.DropdownOptions.Dependency;
 using UABS.Assets.Script.Event;
-using UABS.Assets.Script.EventListener;
 using UABS.Assets.Script.Misc;
 using UnityEngine;
 using UnityEngine.UI;
@@ -32,7 +32,7 @@ namespace UABS.Assets.Script.View
         {
             if (_dispatcher != null)
             {
-                
+                _dispatcher.Dispatch(new DependencyRequestEvent(Path.Combine(PredefinedPaths.ExternalCache, ShortPath)));
             }
             else
             {

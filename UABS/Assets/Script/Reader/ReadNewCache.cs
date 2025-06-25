@@ -21,7 +21,7 @@ namespace UABS.Assets.Script.Reader
         {
             public string Name { get; set; }
             public string Path { get; set; }
-            public string CABcode { get; set; }
+            public string CabCode { get; set; }
             public List<SpriteInfo> SpriteInfos { get; set; }
         }
 
@@ -54,7 +54,7 @@ namespace UABS.Assets.Script.Reader
                     {
                         Path = fileInPath,
                         Name = Path.GetFileName(fileInPath),
-                        CABcode = ReadCABCode(fileInPath),
+                        CabCode = ReadCABCode(fileInPath),
 
                         // --- Sprites ---
                         // Debug.Log(fileInPath);

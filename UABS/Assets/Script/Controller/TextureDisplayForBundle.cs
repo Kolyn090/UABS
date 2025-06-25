@@ -66,7 +66,7 @@ namespace UABS.Assets.Script.Controller
                 _textureWithMeta ??= _readTexturesFromBundle.ReadTexture2DByPathID(_currBunInst, pathID);
                 if (_textureWithMeta == null)
                 {
-                    Debug.LogError($"The given path id {pathID} is neither Texture2D nor Sprite.");
+                    Debug.LogWarning($"The given path id {pathID} is neither Texture2D nor Sprite.");
                     return new();
                 }
                 _cacheTextureByPathID[pathID] = (Texture2DWithMeta)_textureWithMeta;

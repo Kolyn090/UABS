@@ -55,9 +55,9 @@ namespace UABS.Assets.Script.DropdownOptions
             List<string> paths = _readExternalCache.GetCacheFoldersInExternal();
             foreach (string path in paths)
             {
-                string fullPath = Path.Combine(path, "Validation.txt");
-                fullPath = fullPath.Replace("/", Path.DirectorySeparatorChar.ToString());
-                GameObject entry = CreateScrollEntry(Path.GetFileName(path), File.Exists(fullPath));
+                string validationFilePath = Path.Combine(path, "Validation.txt");
+                validationFilePath = validationFilePath.Replace("/", Path.DirectorySeparatorChar.ToString());
+                GameObject entry = CreateScrollEntry(Path.GetFileName(path), File.Exists(validationFilePath));
                 entry.GetComponent<RectTransform>().SetParent(_content.transform, worldPositionStays: false);
             }
         }
@@ -94,7 +94,7 @@ namespace UABS.Assets.Script.DropdownOptions
 
         public void OnEvent(AppEvent e)
         {
-            if (e is CacheRemoveEvent cre)
+            if (e is CacheRefreshEvent cre)
             {
                 ClearAndRecreate();
             }
