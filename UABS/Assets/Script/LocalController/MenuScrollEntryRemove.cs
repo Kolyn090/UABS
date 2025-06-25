@@ -28,7 +28,7 @@ namespace UABS.Assets.Script.View
             {
                 string fullRelPath = Path.Combine(PredefinedPaths.ExternalCache, ShortPath);
                 Debug.Log($"Removed cache folder '{fullRelPath}'");
-                Directory.Delete(fullRelPath);
+                Directory.Delete(fullRelPath, true);
                 _dispatcher.Dispatch(new CacheRemoveEvent(ShortPath));
             }
             else

@@ -94,6 +94,12 @@ namespace UABS.Assets.Script.DropdownOptions
                 Destroy(entryToRemove);
                 entryToRemove = null;
             }
+            else if (e is CacheCreateEvent ccr)
+            {
+                (IMenuScrollEntry, GameObject) pair = CreateScrollEntry(Path.GetFileName(ccr.NewCachePath));
+                _entries.Add((pair.Item1.ShortPath, pair.Item2));
+                pair.Item2.GetComponent<RectTransform>().SetParent(_content.transform, worldPositionStays: false);
+            }
         }
     }
 }
