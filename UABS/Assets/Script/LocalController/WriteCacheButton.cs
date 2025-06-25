@@ -25,8 +25,7 @@ namespace UABS.Assets.Script.LocalController
             string gameDataPath = _sfbManager.PickFolder("Select the game data folder (such as StandaloneWindows64)");
             Debug.Log(gameDataPath);
             string newSavePath = _sfbManager.PickFolderSuggestion("Select Folder to Save New Cache", PredefinedPaths.ExternalCache, GetDefaultName());
-            await Task.Run(() =>_writeCache.CreateAndSaveNewCache(gameDataPath, newSavePath));
-            AppEnvironment.Dispatcher.Dispatch(new CacheCreateEvent(newSavePath));
+            await Task.Run(() =>_writeCache.CreateAndSaveNewCache(gameDataPath, newSavePath, null));
         }
 
         private string GetDefaultName()

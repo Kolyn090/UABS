@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
@@ -19,7 +20,7 @@ namespace UABS.Assets.Script.Writer
         }
 
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-        async public void CreateAndSaveNewCache(string dataPath, string savePath)
+        async public void CreateAndSaveNewCache(string dataPath, string savePath, Action onDone)
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
             Thread thread = new(() =>
@@ -30,6 +31,7 @@ namespace UABS.Assets.Script.Writer
                 UnityMainThreadDispatcher.Enqueue(() =>
                 {
                     Debug.Log("Work done!");
+                    onDone?.Invoke();
                 });
             });
             thread.Start();
@@ -68,6 +70,9 @@ namespace UABS.Assets.Script.Writer
 
                 File.WriteAllText(path, content);
             }
+
+            // Validate creation by adding an extra file "Validation.txt" in save path
+            File.WriteAllText(Path.Combine(savePath, "Validation.txt"), "");
         }
     }
 }

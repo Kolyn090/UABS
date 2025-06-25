@@ -55,7 +55,9 @@ namespace UABS.Assets.Script.DropdownOptions
             List<string> paths = _readExternalCache.GetCacheFoldersInExternal();
             foreach (string path in paths)
             {
-                GameObject entry = CreateScrollEntry(Path.GetFileName(path));
+                string fullPath = Path.Combine(path, "Validation.txt");
+                fullPath = fullPath.Replace("/", Path.DirectorySeparatorChar.ToString());
+                GameObject entry = CreateScrollEntry(Path.GetFileName(path), File.Exists(fullPath));
                 entry.GetComponent<RectTransform>().SetParent(_content.transform, worldPositionStays: false);
             }
         }
@@ -66,7 +68,7 @@ namespace UABS.Assets.Script.DropdownOptions
             _bgImage.color = _normalColor;
         }
 
-        private GameObject CreateScrollEntry(string path)
+        private GameObject CreateScrollEntry(string path, bool interactable)
         {
             GameObject entry = Instantiate(_entryPrefab);
             IMenuScrollEntry menuScrollEntry = entry.GetComponentsInChildren<MonoBehaviour>(true)
@@ -74,6 +76,7 @@ namespace UABS.Assets.Script.DropdownOptions
                                                 .FirstOrDefault();
             menuScrollEntry.ShortPath = path;
             menuScrollEntry.AssignDispatcher(AppEnvironment.Dispatcher);
+            menuScrollEntry.ManagedButton.interactable = interactable;
             return entry;
         }
 
@@ -92,10 +95,6 @@ namespace UABS.Assets.Script.DropdownOptions
         public void OnEvent(AppEvent e)
         {
             if (e is CacheRemoveEvent cre)
-            {
-                ClearAndRecreate();
-            }
-            else if (e is CacheCreateEvent ccr)
             {
                 ClearAndRecreate();
             }

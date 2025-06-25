@@ -5,12 +5,12 @@ using UABS.Assets.Script.DropdownOptions.Dependency;
 using UABS.Assets.Script.Event;
 using UABS.Assets.Script.Misc;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace UABS.Assets.Script.View
 {
     public class MenuScrollEntryRemove : MonoBehaviour, IMenuScrollEntry
     {
-        private EventDispatcher _dispatcher;
         private string _shortPath;
         public string ShortPath { get => _shortPath;
             set
@@ -20,21 +20,20 @@ namespace UABS.Assets.Script.View
             } }
 
         [SerializeField]
+        private Button _button;
+
+        public Button ManagedButton => _button;
+
+        [SerializeField]
         private TextMeshProUGUI _text;
+        private EventDispatcher _dispatcher;
 
         public void ClickButton()
         {
-            if (_dispatcher != null)
-            {
-                string fullRelPath = Path.Combine(PredefinedPaths.ExternalCache, ShortPath);
-                Debug.Log($"Removed cache folder '{fullRelPath}'");
-                Directory.Delete(fullRelPath, true);
-                _dispatcher.Dispatch(new CacheRemoveEvent(ShortPath));
-            }
-            else
-            {
-                Debug.LogWarning("Event dispatcher not found. Please assign one first.");
-            }
+            string fullRelPath = Path.Combine(PredefinedPaths.ExternalCache, ShortPath);
+            Debug.Log($"Removed cache folder '{fullRelPath}'");
+            Directory.Delete(fullRelPath, true);
+            _dispatcher.Dispatch(new CacheRemoveEvent());
         }
 
         public void AssignDispatcher(EventDispatcher dispatcher)

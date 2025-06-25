@@ -5,6 +5,7 @@ using UABS.Assets.Script.Event;
 using UABS.Assets.Script.EventListener;
 using UABS.Assets.Script.Misc;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace UABS.Assets.Script.View
 {
@@ -18,6 +19,11 @@ namespace UABS.Assets.Script.View
             _shortPath = value;
             _text.text = value;
         } }
+
+        [SerializeField]
+        private Button _button;
+
+        public Button ManagedButton => _button;
 
         [SerializeField]
         private TextMeshProUGUI _text;
