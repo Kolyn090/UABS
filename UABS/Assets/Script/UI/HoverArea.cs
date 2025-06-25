@@ -12,7 +12,7 @@ namespace UABS.Assets.Script.UI
             parentDropdown.SendMessage("OnPointerEnter", eventData);
         }
 
-        public void OnPointerExit(PointerEventData eventData)
+        public virtual void OnPointerExit(PointerEventData eventData)
         {
             parentDropdown.SendMessage("OnPointerExit", eventData);
         }

@@ -8,11 +8,12 @@ using UABS.Assets.Script.Misc;
 using UABS.Assets.Script.Reader;
 using UABS.Assets.Script.UI;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 namespace UABS.Assets.Script.DropdownOptions
 {
-    public class HoverSearchBundleDep : HoverArea, IAppEnvironment
+    public class HoverCacheDepDerive : HoverArea, IAppEnvironment
     {
         private AppEnvironment _appEnvironment = null;
         public AppEnvironment AppEnvironment => _appEnvironment;
@@ -27,6 +28,15 @@ namespace UABS.Assets.Script.DropdownOptions
 
         private List<IMenuScrollEntry> _menuScrollEntries = new();
 
+        [SerializeField]
+        private Color _hoverColor;
+
+        [SerializeField]
+        private Color _normalColor;
+
+        [SerializeField]
+        private Image _bgImage;
+
         public void Initialize(AppEnvironment appEnvironment)
         {
             _appEnvironment = appEnvironment;
@@ -36,6 +46,7 @@ namespace UABS.Assets.Script.DropdownOptions
         public override void OnPointerEnter(PointerEventData eventData)
         {
             base.OnPointerEnter(eventData);
+            _bgImage.color = _hoverColor;
             if (_menuScrollEntries.Count != 0)
                 return;
             // Search paths and create prefabs
@@ -46,6 +57,12 @@ namespace UABS.Assets.Script.DropdownOptions
                 _menuScrollEntries.Add(pair.Item1);
                 pair.Item2.GetComponent<RectTransform>().SetParent(_content.transform, worldPositionStays: false);
             }
+        }
+
+        public override void OnPointerExit(PointerEventData eventData)
+        {
+            base.OnPointerExit(eventData);
+            _bgImage.color = _normalColor;
         }
 
         private (IMenuScrollEntry, GameObject) CreateScrollEntry(string path)
