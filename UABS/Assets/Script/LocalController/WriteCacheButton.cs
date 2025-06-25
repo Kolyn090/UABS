@@ -1,4 +1,5 @@
 using System.IO;
+using System.Threading.Tasks;
 using UABS.Assets.Script.Event;
 using UABS.Assets.Script.Misc;
 using UABS.Assets.Script.Writer;
@@ -19,12 +20,12 @@ namespace UABS.Assets.Script.LocalController
             _writeCache = new(AppEnvironment.AssetsManager);
         }
 
-        public void ClickButton()
+        public async void ClickButton()
         {
             string gameDataPath = _sfbManager.PickFolder("Select the game data folder (such as StandaloneWindows64)");
             Debug.Log(gameDataPath);
             string newSavePath = _sfbManager.PickFolderSuggestion("Select Folder to Save New Cache", PredefinedPaths.ExternalCache, GetDefaultName());
-            _writeCache.CreateAndSaveNewCache(gameDataPath, newSavePath);
+            await Task.Run(() =>_writeCache.CreateAndSaveNewCache(gameDataPath, newSavePath));
             AppEnvironment.Dispatcher.Dispatch(new CacheCreateEvent(newSavePath));
         }
 

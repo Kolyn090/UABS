@@ -26,8 +26,6 @@ namespace UABS.Assets.Script.DropdownOptions
 
         private ReadExternalCache _readExternalCache;
 
-        private List<(string, GameObject)> _entries = new();
-
         [SerializeField]
         private Color _hoverColor;
 
@@ -47,15 +45,18 @@ namespace UABS.Assets.Script.DropdownOptions
         {
             base.OnPointerEnter(eventData);
             _bgImage.color = _hoverColor;
-            if (_entries.Count != 0)
-                return;
+            ClearAndRecreate();
+        }
+
+        public void ClearAndRecreate()
+        {
+            ClearContentChildren();
             // Search paths and create prefabs
             List<string> paths = _readExternalCache.GetCacheFoldersInExternal();
             foreach (string path in paths)
             {
-                (IMenuScrollEntry, GameObject) pair = CreateScrollEntry(Path.GetFileName(path));
-                _entries.Add((pair.Item1.ShortPath, pair.Item2));
-                pair.Item2.GetComponent<RectTransform>().SetParent(_content.transform, worldPositionStays: false);
+                GameObject entry = CreateScrollEntry(Path.GetFileName(path));
+                entry.GetComponent<RectTransform>().SetParent(_content.transform, worldPositionStays: false);
             }
         }
 
@@ -65,7 +66,7 @@ namespace UABS.Assets.Script.DropdownOptions
             _bgImage.color = _normalColor;
         }
 
-        private (IMenuScrollEntry, GameObject) CreateScrollEntry(string path)
+        private GameObject CreateScrollEntry(string path)
         {
             GameObject entry = Instantiate(_entryPrefab);
             IMenuScrollEntry menuScrollEntry = entry.GetComponentsInChildren<MonoBehaviour>(true)
@@ -73,32 +74,30 @@ namespace UABS.Assets.Script.DropdownOptions
                                                 .FirstOrDefault();
             menuScrollEntry.ShortPath = path;
             menuScrollEntry.AssignDispatcher(AppEnvironment.Dispatcher);
-            return (menuScrollEntry, entry);
+            return entry;
+        }
+
+        private void ClearContentChildren()
+        {
+            Transform parentTransform = _content.transform;
+
+            for (int i = parentTransform.childCount - 1; i >= 0; i--)
+            {
+                GameObject child = parentTransform.GetChild(i).gameObject;
+                Destroy(child);
+                child = null;
+            }
         }
 
         public void OnEvent(AppEvent e)
         {
             if (e is CacheRemoveEvent cre)
             {
-                GameObject entryToRemove = null;
-                foreach (var pair in _entries)
-                {
-                    if (pair.Item1 == cre.RemovedPath)
-                    {
-                        entryToRemove = pair.Item2;
-                    }
-                }
-                if (entryToRemove == null)
-                    return;
-
-                Destroy(entryToRemove);
-                entryToRemove = null;
+                ClearAndRecreate();
             }
             else if (e is CacheCreateEvent ccr)
             {
-                (IMenuScrollEntry, GameObject) pair = CreateScrollEntry(Path.GetFileName(ccr.NewCachePath));
-                _entries.Add((pair.Item1.ShortPath, pair.Item2));
-                pair.Item2.GetComponent<RectTransform>().SetParent(_content.transform, worldPositionStays: false);
+                ClearAndRecreate();
             }
         }
     }

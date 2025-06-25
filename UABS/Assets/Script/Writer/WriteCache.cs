@@ -1,15 +1,16 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using AssetsTools.NET.Extra;
 using UABS.Assets.Script.Misc;
 using UABS.Assets.Script.Reader;
 using UnityEngine;
 
+
 namespace UABS.Assets.Script.Writer
 {
     public class WriteCache
     {
-        private SfbManager _sfbManager = new();
         private ReadNewCache _readNewCache;
 
         public WriteCache(AssetsManager assetsManager)
@@ -17,7 +18,24 @@ namespace UABS.Assets.Script.Writer
             _readNewCache = new(assetsManager);
         }
 
-        public void CreateAndSaveNewCache(string dataPath, string savePath)
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+        async public void CreateAndSaveNewCache(string dataPath, string savePath)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
+        {
+            Thread thread = new(() =>
+            {
+                DoHeavyWork(dataPath, savePath);
+
+                // Return to main thread
+                UnityMainThreadDispatcher.Enqueue(() =>
+                {
+                    Debug.Log("Work done!");
+                });
+            });
+            thread.Start();
+        }
+
+        private void DoHeavyWork(string dataPath, string savePath)
         {
             if (string.IsNullOrWhiteSpace(dataPath.Replace(@"\\?\", "")))
             {
