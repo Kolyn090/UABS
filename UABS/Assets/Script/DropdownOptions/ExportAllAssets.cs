@@ -1,6 +1,6 @@
-using SFB;
 using UABS.Assets.Script.Event;
 using UABS.Assets.Script.Misc;
+using UABS.Assets.Script.Writer;
 using UnityEngine;
 
 namespace UABS.Assets.Script.DropdownOptions
@@ -9,6 +9,7 @@ namespace UABS.Assets.Script.DropdownOptions
     {
         private AppEnvironment _appEnvironment = null;
         public AppEnvironment AppEnvironment => _appEnvironment;
+        private SfbManager _sfbManager = new();
 
         public void Initialize(AppEnvironment appEnvironment)
         {
@@ -17,7 +18,7 @@ namespace UABS.Assets.Script.DropdownOptions
 
         public void ClickButton()
         {
-            string folderPath = PickFolder();
+            string folderPath = _sfbManager.PickFolder("Export asset(s) to...");
             if (folderPath == "")
             {
                 Debug.Log("Couldn't find path to Folder.");
@@ -30,16 +31,6 @@ namespace UABS.Assets.Script.DropdownOptions
                     destination = folderPath
                 }));
             }
-        }
-
-        private string PickFolder()
-        {
-            var paths = StandaloneFileBrowser.OpenFolderPanel("Select Folder", "", false);
-            if (paths.Length > 0)
-            {
-                return paths[0];
-            }
-            return "";
         }
     }
 }

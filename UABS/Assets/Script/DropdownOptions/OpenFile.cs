@@ -1,7 +1,7 @@
-using SFB;
 using UABS.Assets.Script.Event;
 using UABS.Assets.Script.Misc;
 using UABS.Assets.Script.Reader;
+using UABS.Assets.Script.Writer;
 using UnityEngine;
 
 namespace UABS.Assets.Script.DropdownOptions
@@ -10,6 +10,7 @@ namespace UABS.Assets.Script.DropdownOptions
     {
         private AppEnvironment _appEnvironment = null;
         public AppEnvironment AppEnvironment => _appEnvironment;
+        private SfbManager _sfbManager = new();
 
         public void Initialize(AppEnvironment appEnvironment)
         {
@@ -18,10 +19,10 @@ namespace UABS.Assets.Script.DropdownOptions
 
         public void ClickButton()
         {
-            string filePath = PickFile();
+            string filePath = _sfbManager.PickFile("Select .bundle File", "bundle");
             if (filePath == "")
             {
-                Debug.Log("Couldn't find path to Folder.");
+                Debug.Log("Couldn't find path to File.");
             }
             else
             {
@@ -29,16 +30,6 @@ namespace UABS.Assets.Script.DropdownOptions
                 // Debug.Log(filePath);
                 bundleReader.ReadBundle(filePath);
             }
-        }
-
-        private string PickFile()
-        {
-            var paths = StandaloneFileBrowser.OpenFilePanel("Select .bundle File", "", "bundle", false);
-            if (paths.Length > 0)
-            {
-                return paths[0];
-            }
-            return "";
         }
     }
 }
