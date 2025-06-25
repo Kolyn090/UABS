@@ -17,27 +17,38 @@ namespace UABS.Assets.Script.Writer
             _readNewCache = new(assetsManager);
         }
 
-        public void CreateAndSaveNewCache()
+        public void CreateAndSaveNewCache(string dataPath, string savePath)
         {
-            static bool IsDirectoryPath(string path)
+            if (string.IsNullOrWhiteSpace(dataPath))
             {
-                // Ends with slash, or has no file extension
-                return path.EndsWith("/") || path.EndsWith("\\") || string.IsNullOrEmpty(Path.GetExtension(path));
+                Debug.LogWarning("Failed to read Game Data Folder. Abort.");
+                return;
             }
-            string gameDataPath = _sfbManager.PickFolder("Select the game data folder (such as StandaloneWindows64)");
-            string newSavePath = _sfbManager.PickFolder("Select Folder to Save New Cache", PredefinedPaths.ExternalCache);
-            List<CacheInfo> cache = _readNewCache.BuildCache(gameDataPath, newSavePath);
+
+            if (string.IsNullOrWhiteSpace(savePath))
+            {
+                Debug.LogWarning("Failed to read New Save Folder. Abort.");
+                return;
+            }
+
+            if (!Directory.Exists(savePath))
+            {
+                Directory.CreateDirectory(savePath);
+            }
+
+            List<CacheInfo> cache = _readNewCache.BuildCache(dataPath, savePath);
             foreach (CacheInfo cacheInfo in cache)
             {
                 string path = cacheInfo.path;
                 string content = cacheInfo.jsonContent;
-                if (IsDirectoryPath(path) && !Directory.Exists(path))
+                string dir = Path.GetDirectoryName(path);
+                if (!Directory.Exists(dir))
                 {
-                    Debug.Log($"Creating path {path}");
-                    Directory.CreateDirectory(path);
+                    Debug.Log($"Creating path {dir}");
+                    Directory.CreateDirectory(dir);
                 }
 
-                File.WriteAllText(Path.Combine(path, "index.json"), content);
+                File.WriteAllText(path, content);
             }
         }
     }
