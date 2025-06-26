@@ -51,6 +51,7 @@ UABS (Unity Asset Bundle Seeker或者‘Unity资源包查找工具’) 是一款
 
 答：我认为游戏的版本不是很大的问题，该工具很多地方都是参考了UABEA，如果UABEA都没有问题那理论上来说该工具也没有问题。如果你遇到了与版本相关的问题，可以发issue我可以帮忙看看。
 （该工具的建造版本为Unity 2021.3.33f1，你如果下载的话请确保是用的这个Unity版本）
+
 ---
 
 问题二：你会把这个工具做成一个独立软件吗？
@@ -63,6 +64,7 @@ UABS (Unity Asset Bundle Seeker或者‘Unity资源包查找工具’) 是一款
 
 答：不好意思，3D个人没什么研究，只能说有空的话会看看。如果你有想做的游戏可以在issue发问。
 
+---
 
 ## 特注
 1. 工具的logo由本人绘制，使用字体是[HE'S DEAD Jim](https://www.dafont.com/hes-dead-jim.font)。顺便一提我很爱看星际迷航系列。
