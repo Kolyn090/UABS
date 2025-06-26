@@ -43,6 +43,10 @@ namespace UABS.Assets.Script.Reader
                     DependencyInfo dependencyInfo = (DependencyInfo)_dependencyInfo;
                     result.Add(dependencyInfo);
                 }
+                else
+                {
+                    Debug.Log($"Could not find path to dependency for {dependencyCabCode}.");
+                }
             }
 
             return result;
@@ -58,7 +62,7 @@ namespace UABS.Assets.Script.Reader
                     JArray arr = JArray.Parse(File.ReadAllText(filePath));
                     foreach (var item in arr)
                     {
-                        if (item["CabCode"].ToString().ToLower() == cabCode.ToLower())
+                        if (CompareCabCode(item["CabCode"].ToString(), cabCode))
                         {
                             return new()
                             {
@@ -75,6 +79,13 @@ namespace UABS.Assets.Script.Reader
                 }
             }
             return null;
+        }
+
+        private bool CompareCabCode(string cab1, string cab2)
+        {
+            string cab1Low = cab1.ToLower();
+            string cab2Low = cab2.ToLower();
+            return cab1Low.StartsWith(cab2Low) || cab2Low.StartsWith(cab1Low);
         }
         
         public static string GetAssetTypeValueFieldString(AssetTypeValueField field, int indentLevel = 0)
