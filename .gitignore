@@ -84,7 +84,7 @@ crashlytics-build.properties
 /[Aa]ssets/Unity.VisualScripting.Generated/VisualScripting.Core/Property Providers
 /[Aa]ssets/Unity.VisualScripting.Generated/VisualScripting.Core/Property Providers.meta
 
-UABSCache
+UABS_Cache
 Library
 Logs
 Temp
@@ -96,3 +96,5 @@ Build
 Packages/*
 !Packages/manifest.json
 !Packages/packages-lock.json
+
+.idea
