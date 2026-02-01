@@ -14,7 +14,7 @@ namespace UABS.Data
         private readonly AssetsManager _assetsManager;
         private readonly ITextureDecoder _textureDecoder;
 
-        private AssetsFileInstance? _currFileInst = null;
+        private AssetsFileInstance? _currAssetsInst = null;
         private List<AtlasDumpProcessor>? _currAtlasDumpProcessors = null;
         private AssetClassID _lastReadType = AssetClassID.@void;
         private readonly DumpReader _dumpReader;
@@ -90,9 +90,9 @@ namespace UABS.Data
             }
 
             // 2. Cache Sprite-Atlas connection
-            if (_currFileInst != assetsInst || _lastReadType != AssetClassID.Sprite)
+            if (_currAssetsInst != assetsInst || _lastReadType != AssetClassID.Sprite)
             {
-                _currFileInst = assetsInst;
+                _currAssetsInst = assetsInst;
                 List<DumpInfo> atlasDumps = _dumpReader.ReadSpriteAtlasDumps(assetsInst);
                 _currSpriteDumps = _dumpReader.ReadSpriteDumps(assetsInst);
                 _currAtlasDumpProcessors = AtlasDumpProcessor.DistributeProcessors(atlasDumps, _currSpriteDumps);
@@ -115,9 +115,9 @@ namespace UABS.Data
                 AtlasDumpProcessor atlasDumpInfoForSprite = (AtlasDumpProcessor)_atlasDumpInfoForSprite;
                 Dictionary<int, int> index2RenderDataKey = atlasDumpInfoForSprite.GetIndex2ActualRenderDataKeyIndex();
                 Dictionary<long, int> pathID2Index = atlasDumpInfoForSprite.GetPathID2Index();
-                AssetTypeValueField spriteBase = _assetsManager.GetBaseField(_currFileInst, targetAsset);
+                AssetTypeValueField spriteBase = _assetsManager.GetBaseField(_currAssetsInst, targetAsset);
                 AssetTypeValueField atlasRefField = spriteBase["m_SpriteAtlas"];
-                if (GetExternalAsset(_assetsManager, _currFileInst, assetsInst.parentBundle, atlasRefField) is not {} atlasAsset)
+                if (GetExternalAsset(_assetsManager, _currAssetsInst, assetsInst.parentBundle, atlasRefField) is not {} atlasAsset)
                 {
                     Log.Warn("Assumed has Atlas but couldn't find atlasAsset, return null.");
                     return null;
@@ -127,7 +127,7 @@ namespace UABS.Data
                 AssetTypeValueField dataArray = renderDataMap["Array"][index2RenderDataKey[pathID2Index[pathID]]]; // The true index in dict
                 AssetTypeValueField firstEntry = dataArray["second"];
                 AssetTypeValueField texturePtr = firstEntry["texture"];
-                if (GetExternalAsset(_assetsManager, _currFileInst, assetsInst.parentBundle, texturePtr) is not {} texAsset)
+                if (GetExternalAsset(_assetsManager, _currAssetsInst, assetsInst.parentBundle, texturePtr) is not {} texAsset)
                 {
                     Log.Warn("texAsset not found, return null.");
                     return null;
@@ -143,7 +143,7 @@ namespace UABS.Data
             }
             else // No Atlas
             {
-                AssetTypeValueField spriteBase = _assetsManager.GetBaseField(_currFileInst, targetAsset);
+                AssetTypeValueField spriteBase = _assetsManager.GetBaseField(_currAssetsInst, targetAsset);
                 ImageRect spriteRect = new(
                     spriteBase["m_Rect"]["x"].AsFloat,
                     spriteBase["m_Rect"]["y"].AsFloat,
@@ -161,7 +161,7 @@ namespace UABS.Data
                 }
 
                 AssetTypeValueField texRefField = spriteBase["m_RD"]["texture"];
-                if (GetExternalAsset(_assetsManager, _currFileInst, assetsInst.parentBundle, texRefField) is not {} texAsset)
+                if (GetExternalAsset(_assetsManager, _currAssetsInst, assetsInst.parentBundle, texRefField) is not {} texAsset)
                 {
                     Log.Warn("texAsset not found, return null.");
                     return null;
@@ -170,6 +170,36 @@ namespace UABS.Data
 
                 return ExtractImage(texBase, assetsInst.parentBundle, spriteRect, assetEntry);
             }
+        }
+
+        public ImageAssetEntry? Texture2DToImage(AssetEntry assetEntry)
+        {
+            if (assetEntry.ClassIDService.ClassID != AssetClassID.Texture2D)
+            {
+                Log.Warn("assetEntry is not of type Texture2D, return null.");
+                return null;
+            }
+
+            if (assetEntry.AssetsInst is not {} assetsInst)
+            {
+                Log.Warn("Missing AssetsFileInstance in assetEntry, return null.");
+                return null;
+            }
+
+            if (assetEntry.AssetFileInfo is not {} assetFileInfo)
+            {
+                Log.Warn("Missing AssetFileInfo in assetEntry, return null.");
+                return null;
+            }
+
+            if (_currAssetsInst != assetsInst || _lastReadType != AssetClassID.Texture2D)
+            {
+                _currAssetsInst = assetsInst;
+                _lastReadType = AssetClassID.Texture2D;
+            }
+
+            AssetTypeValueField texBase = _assetsManager.GetBaseField(_currAssetsInst, assetFileInfo);
+            return ExtractImage(texBase, assetsInst.parentBundle, null, assetEntry);
         }
 
         private ImageAssetEntry? ExtractImage(AssetTypeValueField texBase, 
@@ -182,7 +212,7 @@ namespace UABS.Data
             int format = texBase["m_TextureFormat"].AsInt;
             ImagePixelFormat imagePixelFormat = ToImagePixelFormat.Convert(format);
 
-            if (_currFileInst is not {} currFileInst)
+            if (_currAssetsInst is not {} currFileInst)
             {
                 Log.Warn("_currFileInst is null, return null.");
                 return null;
