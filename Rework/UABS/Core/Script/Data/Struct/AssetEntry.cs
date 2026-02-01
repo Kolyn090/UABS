@@ -17,7 +17,7 @@ namespace UABS.Data
         public static readonly string Selected_Row_Background_Color = "#00FF00";
 
         public string Name { get; set; } = string.Empty;
-        public AssetClassIDService ClassID { get; set; } = new(AssetClassID.@void);
+        public AssetClassIDService ClassIDService { get; set; } = new(AssetClassID.@void);
         public long PathID { get; set; }
         public uint UnCompressedSize { get; set; }
         public uint CompressedSize { get; set; }
@@ -34,6 +34,20 @@ namespace UABS.Data
         {
             get => _rowBackground;
             set => SetProperty(ref _rowBackground, value);
+        }
+
+        public static TDerived ConvertToDerived<TDerived>(AssetEntry baseObj) 
+            where TDerived : AssetEntry, new()
+        {
+            TDerived derived = new TDerived();
+            foreach (var prop in typeof(AssetEntry).GetProperties())
+            {
+                if (prop.CanRead && prop.CanWrite)
+                {
+                    prop.SetValue(derived, prop.GetValue(baseObj));
+                }
+            }
+            return derived;
         }
     }
 }

@@ -80,7 +80,7 @@
                                         Margin="8,2,0,0"
                                         CornerRadius="2,0,0,2"
                                         Background="{Binding RowBackground}">
-                                    <Image Source="{Binding ClassID, Converter={StaticResource AssetTypeIconConvertor}}"
+                                    <Image Source="{Binding ClassIDService, Converter={StaticResource AssetTypeIconConvertor}}"
                                         Width="32"
                                         Height="32"
                                         VerticalAlignment="Center"/>

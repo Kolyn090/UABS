@@ -1,6 +1,9 @@
 using UABS.Wrapper;
 using Avalonia.Platform;
 using Avalonia.Media.Imaging;
+using System;
+using Avalonia;
+using UABS.Util;
 
 namespace UABS.AvaloniaUI
 {
@@ -8,9 +11,27 @@ namespace UABS.AvaloniaUI
     {
         public Bitmap Bitmap { get; }
 
-        public AvaloniaImageResource(Bitmap bitmap)
+        public AvaloniaImageResource(byte[] rawImageBytes)
         {
-            Bitmap = bitmap;
+            if (rawImageBytes == null || rawImageBytes.Length == 0)
+            {
+                Log.Error($"ArgumentException: Pixel data cannot be null or empty: {nameof(rawImageBytes)}");
+                throw new ArgumentException("Pixel data cannot be null or empty", nameof(rawImageBytes));
+            }
+
+            var writeableBitmap = new WriteableBitmap(
+                new PixelSize(Width, Height),
+                new Vector(96, 96),
+                ToAvaloniaPixelFormat.Convert(ImagePixelFormat)
+            );
+
+            using (var fb = writeableBitmap.Lock())
+            {
+                System.Runtime.InteropServices.Marshal.Copy(rawImageBytes, 0, fb.Address, rawImageBytes.Length);
+            }
+
+            Bitmap = writeableBitmap;
+            RawImageBytes = rawImageBytes;
         }
 
         public int Width => Bitmap.PixelSize.Width;
@@ -31,6 +52,13 @@ namespace UABS.AvaloniaUI
 
                 return ImagePixelFormat.Unknown;
             }
+        }
+
+        public byte[] RawImageBytes { get; }
+
+        public static AvaloniaImageResource FromCommonImageResource(CommonImageResource commonImageResource)
+        {
+            return new AvaloniaImageResource(commonImageResource.RawImageBytes);
         }
     }
 }

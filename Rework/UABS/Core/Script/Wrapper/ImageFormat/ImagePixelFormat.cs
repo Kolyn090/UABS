@@ -5,6 +5,7 @@ namespace UABS.Wrapper
         Unknown,
         RGBA32,
         BGRA32,
-        Grayscale8
+        Grayscale8,
+        Alpha8
     }
 }

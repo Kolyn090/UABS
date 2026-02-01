@@ -2,12 +2,12 @@ namespace UABS.Wrapper
 {
     public readonly struct ImageRect
     {
-        public readonly int X;
-        public readonly int Y;
-        public readonly int Width;
-        public readonly int Height;
+        public readonly float X;
+        public readonly float Y;
+        public readonly float Width;
+        public readonly float Height;
 
-        public ImageRect(int x, int y, int width, int height)
+        public ImageRect(float x, float y, float width, float height)
         {
             X = x;
             Y = y;

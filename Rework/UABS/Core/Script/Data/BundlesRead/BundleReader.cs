@@ -39,7 +39,7 @@ namespace UABS.Data
                 AssetEntry assetEntry = new()
                 {
                     Name = assetName,
-                    ClassID = new(classID),
+                    ClassIDService = new(classID),
                     PathID = assetFileInfo.PathId,
                     AssetFileInfo = assetFileInfo,
                     AssetsInst = assetsInst
