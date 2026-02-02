@@ -10,9 +10,15 @@
         <StyleInclude Source="avares://AvaloniaUI/Script/Styles/FileWindowDisplay.axaml"/>
     </UserControl.Styles>
 
+    <UserControl.Resources>
+        <local:RawImageToBitmapConverter x:Key="RawImageConverter"/>
+    </UserControl.Resources>
+
     <UserControl.DataTemplates>
         <DataTemplate DataType="vm:ImagePreviewViewModel">
-            <Image Source="{Binding ImagePath}" Stretch="Uniform"/>
+            <Image Source="{Binding ImageResource,
+                            Converter={StaticResource RawImageConverter}}" 
+                    Stretch="Uniform"/>
         </DataTemplate>
 
         <DataTemplate DataType="vm:TextPreviewViewModel">

@@ -15,10 +15,8 @@ namespace UABS.__Test__
 
         public static void Test()
         {
-            AssetsManagerService assetsManagerService = new();
-            AssetsManager assetsManager = assetsManagerService.AssetsManager;
+            AssetsManager assetsManager = new();
             BcDecoderWrapper decoder = new();
-            ImageReader imageReader = new(assetsManagerService, decoder);
 
             Log.Info("LoadClassPackage Loading...");
             var assembly = typeof(ClassDataLoader).Assembly;
@@ -38,7 +36,7 @@ namespace UABS.__Test__
                 Log.Error($"Error: file doesn't exist");
             }
 
-            var readResult = BundleReader.ReadFromPath(TestBundlePath, assetsManager);
+            var readResult = BundleReader.ReadFromPath(TestBundlePath, assetsManager, decoder);
             if (readResult.Item1 is not {} assetsInsts ||
                 readResult.Item2 is not {} assetEntries)
             {
@@ -48,23 +46,26 @@ namespace UABS.__Test__
 
             Log.Info($"Length of assetEntries: {assetEntries.Count}");
 
-            if (imageReader.SpriteToImage(assetEntries[0]) is not {} imageAssetEntry)
-            {
-                Log.Error("Failed to read imageAssetEntry.");
-                return;
-            }
+            // if (imageReader.SpriteToImage(assetEntries[0]) is not {} imageAssetEntry)
+            // {
+            //     Log.Error("Failed to read imageAssetEntry.");
+            //     return;
+            // }
 
-            if (imageAssetEntry.Image is not {} image)
-            {
-                Log.Error("Failed to read image.");
-                return;
-            }
+            // if (imageAssetEntry.Image is not {} image)
+            // {
+            //     Log.Error("Failed to read image.");
+            //     return;
+            // }
 
-            if (image.RawImageBytes is not {} rawImageBytes)
-            {
-                Log.Error("Failed to read raw image bytes.");
-                return;
-            }
+            // if (image.RawImageBytes is not {} rawImageBytes)
+            // {
+            //     Log.Error("Failed to read raw image bytes.");
+            //     return;
+            // }
+
+            IImageResource image = (assetEntries[0] as ImageAssetEntry)!.Image!;
+            byte[] rawImageBytes = image.RawImageBytes;
 
             Log.Info(image.ImagePixelFormat.ToString());
 

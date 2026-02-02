@@ -7,10 +7,9 @@ namespace UABS.Wrapper
         {
             return unityFormat switch
             {
-                0 => ImagePixelFormat.RGBA32,
-                1 => ImagePixelFormat.BGRA32,
-                10 => ImagePixelFormat.Grayscale8,
-                28 => ImagePixelFormat.Grayscale8,
+                4 => ImagePixelFormat.RGBA32,
+                14 => ImagePixelFormat.BGRA32,
+                9 => ImagePixelFormat.Grayscale8,
                 _ => ImagePixelFormat.Unknown
             };
         }

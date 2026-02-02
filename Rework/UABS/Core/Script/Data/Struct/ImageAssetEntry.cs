@@ -4,7 +4,18 @@ namespace UABS.Data
 {
     public sealed class ImageAssetEntry : AssetEntry
     {
-        public IImageResource? Image { get; set; }
+        private IImageResource? _image;
+        public IImageResource? Image {
+            get
+            {
+                return _image;
+            }
+            set
+            {
+                if (value is {} image)
+                    _image = CropImageResource.Crop(image, ImageRect);
+            }
+        }
         public ImageRect ImageRect { get; set; }
 
         public ImageAssetEntry()
@@ -14,7 +25,9 @@ namespace UABS.Data
 
         public static ImageAssetEntry ConvertToImageAssetEntry(AssetEntry baseObj)
         {
-            return ConvertToDerived<ImageAssetEntry>(baseObj);
+            ImageAssetEntry result = ConvertToDerived<ImageAssetEntry>(baseObj);
+            result.PreviewType = AssetPreviewType.Image2D;
+            return result;
         }
     }
 }

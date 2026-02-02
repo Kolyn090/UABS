@@ -14,7 +14,6 @@ namespace UABS.ViewModel
         public ObservableCollection<AssetEntry> Assets { get; } = new();
         public ObservableCollection<AssetEntry> SelectedAssets { get; } = new();
         public IReadOnlyList<AssetsFileInstance>? AssetsInsts { get; }
-        public AssetEntry? LastSelectedAsset { get; set; }
 
         private AssetPreviewViewModel? _assetPreview;
         public AssetPreviewViewModel? AssetPreview
@@ -84,7 +83,7 @@ namespace UABS.ViewModel
             // TODO: Rework AssetPreviewInfo to include relevant information, for now just all strings.
             AssetPreview = assetEntry.PreviewType switch
             {
-                AssetPreviewType.Image2D => new ImagePreviewViewModel("Image preview"),
+                AssetPreviewType.Image2D => new ImagePreviewViewModel(assetEntry),
                 AssetPreviewType.Model3D => new ModelPreviewViewModel("Model preview"),
                 AssetPreviewType.Text    => new TextPreviewViewModel("Text preview"),
                 AssetPreviewType.Audio   => new AudioPreviewViewModel("Audio preview"),
@@ -92,9 +91,11 @@ namespace UABS.ViewModel
             };
         }
 
-        public void OnAssetEntryTriggered()
+        public void OnLastlySelected(AssetEntry last)
         {
-            
+            // TODO: convert to image asset entry somehow
+            Log.Info(last.PreviewType.ToString());
+            UpdatePreview(last);
         }
     }
 }

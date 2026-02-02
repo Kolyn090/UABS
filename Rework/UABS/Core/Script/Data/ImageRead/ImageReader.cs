@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using AssetsTools.NET;
 using AssetsTools.NET.Extra;
-using UABS.Service;
 using UABS.Util;
 using UABS.Wrapper;
 
@@ -20,10 +19,10 @@ namespace UABS.Data
         private readonly DumpReader _dumpReader;
         private List<DumpInfo>? _currSpriteDumps = null;
 
-        public ImageReader(AssetsManagerService assetsManagerService,
+        public ImageReader(AssetsManager assetsManager,
                             ITextureDecoder textureDecoder)
         {
-            _assetsManager = assetsManagerService.AssetsManager;
+            _assetsManager = assetsManager;
             _dumpReader = new(_assetsManager);
             _textureDecoder = textureDecoder;
         }
@@ -52,7 +51,7 @@ namespace UABS.Data
                     return null;
                 }
 
-                foreach (AtlasDumpProcessor atlasDumpProcessor in _currAtlasDumpProcessors)
+                foreach (AtlasDumpProcessor atlasDumpProcessor in currAtlasDumpProcessors)
                 {
                     if (atlasDumpProcessor.spriteDumpInfos.Contains(spriteDump))
                     {
@@ -153,7 +152,7 @@ namespace UABS.Data
 
                 if (spriteBase.Get("m_AtlasTags") is {} atlasTags)
                 {
-                    if (spriteBase["m_AtlasTags"]["Array"].AsArray is {} arr && arr.size != 0)
+                    if (atlasTags["Array"].AsArray is {} arr && arr.size != 0)
                     {
                         Log.Warn("No SpriteAtlas file found in bundle but Sprite has atlas tag. Skip.");
                         return null;

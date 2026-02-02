@@ -53,7 +53,7 @@ namespace UABS.AvaloniaUI
             {
                 if (this.DataContext is FileWindowViewModel vm)
                 {
-                    vm.LastSelectedAsset = row;
+                    vm.OnLastlySelected(row);
                     // Log.Info($"Last clicked row: {row.Name}");
                 }
             }

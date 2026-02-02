@@ -1,15 +1,24 @@
 using UABS.Data;
+using UABS.Util;
+using UABS.Wrapper;
 
 namespace UABS.ViewModel
 {
     public sealed class ImagePreviewViewModel : AssetPreviewViewModel
     {
-        public string ImagePath { get; }
+        public IImageResource? ImageResource { get; }
 
-        public ImagePreviewViewModel(string imagePath)
+        public ImagePreviewViewModel(AssetEntry assetEntry)
             : base(AssetPreviewType.Image2D)
         {
-            ImagePath = imagePath;
+            if (assetEntry is ImageAssetEntry imageAssetEntry)
+            {
+                ImageResource = imageAssetEntry.Image;
+            }
+            else
+            {
+                Log.Error("Asset entry is not of type Image. Abort.");
+            }
         }
     }
 }

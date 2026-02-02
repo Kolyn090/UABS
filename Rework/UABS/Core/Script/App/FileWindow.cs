@@ -4,20 +4,24 @@ using AssetsTools.NET.Extra;
 using UABS.Data;
 using UABS.Service;
 using UABS.Util;
+using UABS.Wrapper;
 
 namespace UABS.App
 {
     public class FileWindow
     {
         private readonly AssetsManager _assetsManager;
+        private readonly ITextureDecoder TextureDecoder;
+
         private IReadOnlyList<AssetsFileInstance>? AssetsInsts { get; set; }
         private IReadOnlyList<AssetEntry>? Assets { get; set; }
         // When open any openable file
         public event Action<List<AssetEntry>>? OnNewBundleOpened;
 
-        public FileWindow(AssetsManagerService assetsManagerService)
+        public FileWindow(AssetsManagerService assetsManagerService, ITextureDecoder textureDecoder)
         {
             _assetsManager = assetsManagerService.AssetsManager;
+            TextureDecoder = textureDecoder;
 
             // ! Load classdata.tpk
             var assembly = typeof(ClassDataLoader).Assembly;
@@ -32,7 +36,7 @@ namespace UABS.App
         public void OpenNewBundle(string path)
         {
             // Decompose the bundle file in path to AssetEntries
-            var result = BundleReader.ReadFromPath(path, _assetsManager);
+            var result = BundleReader.ReadFromPath(path, _assetsManager, TextureDecoder);
             AssetsInsts = result.Item1;
             Assets = result.Item2;
 

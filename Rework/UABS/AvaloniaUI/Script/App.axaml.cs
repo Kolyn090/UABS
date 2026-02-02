@@ -28,6 +28,7 @@ namespace UABS.AvaloniaUI
             // Platform services
             services.AddSingleton<IFileBrowser, AvaloniaFileBrowserWrapper>();
             services.AddSingleton<IJsonSerializer, NewtonsoftJsonSerializer>();
+            services.AddSingleton<ITextureDecoder, BcDecoderWrapper>();
 
             // ViewModel services
             services.AddSingleton<MainViewModel>();
