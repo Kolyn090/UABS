@@ -7,6 +7,11 @@ namespace UABS.Data
         public IImageResource? Image { get; set; }
         public ImageRect ImageRect { get; set; }
 
+        public ImageAssetEntry()
+        {
+            PreviewType = AssetPreviewType.Image2D;
+        }
+
         public static ImageAssetEntry ConvertToImageAssetEntry(AssetEntry baseObj)
         {
             return ConvertToDerived<ImageAssetEntry>(baseObj);

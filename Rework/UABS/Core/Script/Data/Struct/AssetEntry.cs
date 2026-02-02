@@ -1,8 +1,11 @@
 using System.Collections.Generic;
+using System.Windows.Input;
 using AssetsTools.NET;
 using AssetsTools.NET.Extra;
 using UABS.Misc;
 using UABS.Service;
+using UABS.Util;
+using UABS.ViewModel;
 
 namespace UABS.Data
 {
@@ -28,6 +31,8 @@ namespace UABS.Data
         public AssetFileInfo? AssetFileInfo { get; set; }
         public AssetsFileInstance? AssetsInst { get; set; }
 
+        public AssetPreviewType PreviewType { get; protected set; } = AssetPreviewType.None;
+
         private string _rowBackground = "#FFFFFF";
 
         public string RowBackground
@@ -36,10 +41,15 @@ namespace UABS.Data
             set => SetProperty(ref _rowBackground, value);
         }
 
+        public AssetEntry()
+        {
+
+        }
+
         public static TDerived ConvertToDerived<TDerived>(AssetEntry baseObj) 
             where TDerived : AssetEntry, new()
         {
-            TDerived derived = new TDerived();
+            TDerived derived = new();
             foreach (var prop in typeof(AssetEntry).GetProperties())
             {
                 if (prop.CanRead && prop.CanWrite)

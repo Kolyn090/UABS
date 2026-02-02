@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using AssetsTools.NET;
@@ -20,8 +19,6 @@ namespace UABS.__Test__
             AssetsManager assetsManager = assetsManagerService.AssetsManager;
             BcDecoderWrapper decoder = new();
             ImageReader imageReader = new(assetsManagerService, decoder);
-
-            AssetEntry assetEntry = new();
 
             Log.Info("LoadClassPackage Loading...");
             var assembly = typeof(ClassDataLoader).Assembly;
