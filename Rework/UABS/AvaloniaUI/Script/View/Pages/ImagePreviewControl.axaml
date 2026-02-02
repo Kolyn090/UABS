@@ -1,0 +1,32 @@
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:UABS.AvaloniaUI"
+    xmlns:vm="clr-namespace:UABS.ViewModel;assembly=Core"
+    x:Class="UABS.AvaloniaUI.ImagePreviewControl"
+    x:DataType="vm:ImagePreviewViewModel">
+
+    <UserControl.Resources>
+        <local:RawImageToBitmapConverter x:Key="RawImageConverter"/>
+    </UserControl.Resources>
+
+    <Grid>
+        <!-- Background -->
+        <Image Source="avares://AvaloniaUI/Resources/Images/transparent_bg_8x8.png"
+            Stretch="UniformToFill"
+            RenderOptions.BitmapInterpolationMode="None"/>
+
+        <!-- Foreground with pan & zoom -->
+        <Border ClipToBounds="True">
+            <Canvas x:Name="ForegroundCanvas">
+                <Image x:Name="ForegroundImage"
+                    Source="{Binding ImageResource, Converter={StaticResource RawImageConverter}}"
+                    RenderOptions.BitmapInterpolationMode="None"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Stretch="Uniform"/>
+            </Canvas>
+        </Border>
+    </Grid>
+
+</UserControl>

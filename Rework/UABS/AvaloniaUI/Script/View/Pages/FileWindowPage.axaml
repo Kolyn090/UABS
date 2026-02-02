@@ -16,19 +16,7 @@
 
     <UserControl.DataTemplates>
         <DataTemplate DataType="vm:ImagePreviewViewModel">
-            <Grid>
-                <!-- Background image -->
-                <Image Source="avares://AvaloniaUI/Resources/Images/transparent_bg_8x8.png"
-                    Stretch="UniformToFill"
-                    RenderOptions.BitmapInterpolationMode="None"/>
-                
-                <!-- Foreground image -->
-                <Image Source="{Binding ImageResource, Converter={StaticResource RawImageConverter}}"
-                    Stretch="Uniform"
-                    RenderOptions.BitmapInterpolationMode="None"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"/>
-            </Grid>
+            <local:ImagePreviewControl />
         </DataTemplate>
 
         <DataTemplate DataType="vm:TextPreviewViewModel">
