@@ -4,7 +4,6 @@ using AssetsTools.NET.Extra;
 using UABS.App;
 using UABS.Data;
 using UABS.Misc;
-using UABS.Util;
 
 namespace UABS.ViewModel
 {
@@ -20,6 +19,43 @@ namespace UABS.ViewModel
         {
             get => _assetPreview;
             set => SetProperty(ref _assetPreview, value);
+        }
+
+        private string _displayName = "---";
+        public string DisplayName
+        {
+            get => _displayName;
+            set => SetProperty(ref _displayName, value);
+        }
+        private string _displayPathID = "---";
+        public string DisplayPathID
+        {
+            get => _displayPathID;
+            set => SetProperty(ref _displayPathID, value);
+        }
+        private string _displayFileID = "---";
+        public string DisplayFileID
+        {
+            get => _displayFileID;
+            set => SetProperty(ref _displayFileID, value);
+        }
+        private string _displaySize = "---";
+        public string DisplaySize
+        {
+            get => _displaySize;
+            set => SetProperty(ref _displaySize, value);
+        }
+        private string _displayPath = "---";
+        public string DisplayPath
+        {
+            get => _displayPath;
+            set => SetProperty(ref _displayPath, value);
+        }
+        private string _displayMemo = "";
+        public string DisplayMemo
+        {
+            get => _displayMemo;
+            set => SetProperty(ref _displayMemo, value);
         }
 
         private readonly static List<string> Alternative_Row_Background_Colors = AssetEntry.Alternative_Row_Background_Colors;
@@ -93,9 +129,13 @@ namespace UABS.ViewModel
 
         public void OnLastlySelected(AssetEntry last)
         {
-            // TODO: convert to image asset entry somehow
-            Log.Info(last.PreviewType.ToString());
             UpdatePreview(last);
+            DisplayName = last.Name;
+            DisplayPathID = last.PathID.ToString();
+            DisplayFileID = last.FileID.ToString();
+            DisplaySize = $"{last.CompressedSize} ({last.UnCompressedSize})";
+            DisplayPath = last.OriginalPath;
+            DisplayMemo = last.Memo;
         }
     }
 }

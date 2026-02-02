@@ -130,22 +130,22 @@
                 RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto"
                 RowSpacing="6">
                 <TextBlock Grid.Row="0" Grid.Column="0" Text="Name" VerticalAlignment="Center" Margin="0,0,4,0" Classes="displayHint"/>
-                <TextBox Grid.Row="0" Grid.Column="1" Text="---" IsReadOnly="True"/>
+                <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding DisplayName}" IsReadOnly="True"/>
 
                 <TextBlock Grid.Row="1" Grid.Column="0" Text="Path ID" VerticalAlignment="Center" Margin="0,0,4,0" Classes="displayHint"/>
-                <TextBox Grid.Row="1" Grid.Column="1" Text="---" IsReadOnly="True"/>
+                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding DisplayPathID}" IsReadOnly="True"/>
 
                 <TextBlock Grid.Row="2" Grid.Column="0" Text="File ID" VerticalAlignment="Center" Margin="0,0,4,0" Classes="displayHint"/>
-                <TextBox Grid.Row="2" Grid.Column="1" Text="---" IsReadOnly="True"/>
+                <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding DisplayFileID}" IsReadOnly="True"/>
 
                 <TextBlock Grid.Row="3" Grid.Column="0" Text="Size" VerticalAlignment="Center" Margin="0,0,4,0" Classes="displayHint"/>
-                <TextBox Grid.Row="3" Grid.Column="1" Text="---" IsReadOnly="True"/>
+                <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding DisplaySize}" IsReadOnly="True"/>
 
                 <TextBlock Grid.Row="4" Grid.Column="0" Text="Path" VerticalAlignment="Center" Margin="0,0,4,0" Classes="displayHint"/>
-                <TextBox Grid.Row="4" Grid.Column="1" Text="---" IsReadOnly="True"/>
+                <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding DisplayPath}" IsReadOnly="True"/>
 
                 <TextBlock Grid.Row="5" Grid.Column="0" Text="Memo" VerticalAlignment="Center" Margin="0,0,4,0" Classes="displayHint"/>
-                <TextBox Grid.Row="5" Grid.Column="1" Text="---" IsReadOnly="True"/>
+                <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding DisplayMemo}"/>
             </Grid>
 
             <!-- Bottom half displays -->
