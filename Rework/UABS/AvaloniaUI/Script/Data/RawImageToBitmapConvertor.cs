@@ -39,14 +39,14 @@ namespace UABS.AvaloniaUI
                     ToAvaloniaPixelFormat.Convert(ImagePixelFormat.RGBA32),
                     img.Width,
                     img.Height,
-                    img.RawImageBytes,
+                    FlipVertically(img.RawImageBytes, img.Width, img.Height, 4),
                     img.Width * 4),
 
                 ImagePixelFormat.BGRA32 => CreateBitmap(
                     PixelFormat.Bgra8888,
                     img.Width,
                     img.Height,
-                    img.RawImageBytes,
+                    FlipVertically(img.RawImageBytes, img.Width, img.Height, 4),
                     img.Width * 4),
 
                 ImagePixelFormat.Grayscale8 => CreateFromGray8(img),
@@ -92,24 +92,38 @@ namespace UABS.AvaloniaUI
 
         private static Bitmap CreateFromGray8(IImageResource img)
         {
-            var rgba = new byte[img.Width * img.Height * 4];
-            var src = img.RawImageBytes;
+            int width = img.Width;
+            int height = img.Height;
+            var flipped = FlipVertically(img.RawImageBytes, width, height, 1);
 
-            for (int i = 0, j = 0; i < src.Length; i++, j += 4)
+            var rgba = new byte[width * height * 4];
+
+            for (int i = 0, j = 0; i < flipped.Length; i++, j += 4)
             {
-                byte g = src[i];
+                byte g = flipped[i];
                 rgba[j + 0] = g;
                 rgba[j + 1] = g;
                 rgba[j + 2] = g;
                 rgba[j + 3] = 255;
             }
 
-            return CreateBitmap(
-                PixelFormat.Rgba8888,
-                img.Width,
-                img.Height,
-                rgba,
-                img.Width * 4);
+            return CreateBitmap(PixelFormat.Rgba8888, width, height, rgba, width * 4);
+        }
+
+        private static byte[] FlipVertically(byte[] src, int width, int height, int bpp)
+        {
+            int stride = width * bpp;
+            var dst = new byte[src.Length];
+
+            for (int y = 0; y < height; y++)
+            {
+                int srcOffset = (height - 1 - y) * stride;
+                int dstOffset = y * stride;
+
+                Buffer.BlockCopy(src, srcOffset, dst, dstOffset, stride);
+            }
+
+            return dst;
         }
     }
 }
