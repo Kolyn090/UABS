@@ -1,13 +1,13 @@
-using SkiaSharp;
 using System;
 using System.IO;
+using SkiaSharp;
+using UABS.Util;
 
-namespace UABS.Data
+namespace UABS.Wrapper
 {
-    // TODO: Make wrapper
-    public static class SkiaPngWriter
+    public class SkiaPngWriter : IPngWriter
     {
-        public static void SaveRgbaAsPng(
+        public void SaveRgbaAsPng(
             byte[] rgba,
             int width,
             int height,
@@ -15,7 +15,10 @@ namespace UABS.Data
             bool flipVertically = true)
         {
             if (rgba.Length != width * height * 4)
+            {
+                Log.Error("ArgumentException: Invalid RGBA buffer size.");
                 throw new ArgumentException("Invalid RGBA buffer size");
+            }
 
             using var bitmap = new SKBitmap(
                 new SKImageInfo(width, height, SKColorType.Rgba8888, SKAlphaType.Unpremul)
@@ -41,6 +44,7 @@ namespace UABS.Data
             using var image = SKImage.FromBitmap(bitmap);
             using var data = image.Encode(SKEncodedImageFormat.Png, 100);
 
+            Log.Info($"Successfully wrote image to {outputPath}");
             File.WriteAllBytes(outputPath, data.ToArray());
         }
     }

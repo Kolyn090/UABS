@@ -71,7 +71,7 @@ namespace UABS.__Test__
 
             Log.Info(image.ImagePixelFormat.ToString());
 
-            SkiaPngWriter.SaveRgbaAsPng(
+            new SkiaPngWriter().SaveRgbaAsPng(
                 rawImageBytes,
                 image.Width,
                 image.Height,

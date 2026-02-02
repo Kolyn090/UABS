@@ -40,7 +40,7 @@ namespace UABS.AvaloniaUI
             // FileNavigationTester.Test1();
             // FileNavigationTester.Test2();
             // FileNavigationTester.Test3();
-            ImageReaderTester.Test();
+            // ImageReaderTester.Test();
 
             AvaloniaXamlLoader.Load(this);
         }
