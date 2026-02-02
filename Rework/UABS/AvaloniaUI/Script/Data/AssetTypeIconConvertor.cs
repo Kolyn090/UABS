@@ -51,7 +51,7 @@ namespace UABS.AvaloniaUI
                 var uri = new Uri($"avares://{assemblyName}/{relativePath}");
 
                 using var stream = AssetLoader.Open(uri);
-                if (stream != null)
+                if (stream == null)
                 {
                     Log.Error($"Resource not found: avares://{assemblyName}/{relativePath}");
                 }
