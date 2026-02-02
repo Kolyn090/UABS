@@ -4,6 +4,7 @@ using AssetsTools.NET.Extra;
 using UABS.App;
 using UABS.Data;
 using UABS.Misc;
+using UABS.Util;
 
 namespace UABS.ViewModel
 {
@@ -13,6 +14,7 @@ namespace UABS.ViewModel
         public ObservableCollection<AssetEntry> Assets { get; } = new();
         public ObservableCollection<AssetEntry> SelectedAssets { get; } = new();
         public IReadOnlyList<AssetsFileInstance>? AssetsInsts { get; }
+        public AssetEntry? LastSelectedAsset { get; set; }
 
         private AssetPreviewViewModel? _assetPreview;
         public AssetPreviewViewModel? AssetPreview
@@ -77,17 +79,22 @@ namespace UABS.ViewModel
             }
         }
 
-        public void UpdatePreview(AssetPreviewInfo asset)
+        public void UpdatePreview(AssetEntry assetEntry)
         {
             // TODO: Rework AssetPreviewInfo to include relevant information, for now just all strings.
-            AssetPreview = asset.Type switch
+            AssetPreview = assetEntry.PreviewType switch
             {
-                AssetPreviewType.Image2D => new ImagePreviewViewModel(asset.AssetPath),
-                AssetPreviewType.Model3D => new ModelPreviewViewModel(asset.AssetPath),
-                AssetPreviewType.Text    => new TextPreviewViewModel(asset.AssetPath),
-                AssetPreviewType.Audio   => new AudioPreviewViewModel(asset.AssetPath),
+                AssetPreviewType.Image2D => new ImagePreviewViewModel("Image preview"),
+                AssetPreviewType.Model3D => new ModelPreviewViewModel("Model preview"),
+                AssetPreviewType.Text    => new TextPreviewViewModel("Text preview"),
+                AssetPreviewType.Audio   => new AudioPreviewViewModel("Audio preview"),
                 _                        => new UnknownPreviewViewModel("Unsupported type")
             };
+        }
+
+        public void OnAssetEntryTriggered()
+        {
+            
         }
     }
 }

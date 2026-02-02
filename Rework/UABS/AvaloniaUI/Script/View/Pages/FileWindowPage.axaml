@@ -96,7 +96,8 @@
                                 <Border Height="36"
                                         Margin="0,2,26,0"
                                         CornerRadius="0,2,2,0"
-                                        Background="{Binding RowBackground}">
+                                        Background="{Binding RowBackground}"
+                                        PointerPressed="RowClicked">
                                     <TextBlock Text="{Binding Name}"
                                             VerticalAlignment="Center"
                                             Padding="6,0,0,0"/>

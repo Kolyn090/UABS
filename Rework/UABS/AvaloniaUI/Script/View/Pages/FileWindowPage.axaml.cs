@@ -1,5 +1,6 @@
 using System.Linq;
 using Avalonia.Controls;
+using Avalonia.Input;
 using UABS.Data;
 using UABS.Util;
 using UABS.ViewModel;
@@ -44,6 +45,18 @@ namespace UABS.AvaloniaUI
                     vm.AssetPreview = new UnknownPreviewViewModel("Preview not available for this asset type.");
                 }
             };
+        }
+
+        private void RowClicked(object? sender, PointerPressedEventArgs e)
+        {
+            if (sender is Border b && b.DataContext is AssetEntry row)
+            {
+                if (this.DataContext is FileWindowViewModel vm)
+                {
+                    vm.LastSelectedAsset = row;
+                    // Log.Info($"Last clicked row: {row.Name}");
+                }
+            }
         }
     }
 }
