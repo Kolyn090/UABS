@@ -67,7 +67,7 @@ namespace UABS.__Test__
             IImageResource image = (assetEntries[0] as ImageAssetEntry)!.Image!;
             byte[] rawImageBytes = image.RawImageBytes;
 
-            Log.Info(image.ImagePixelFormat.ToString());
+            Log.Info(image.UnityTextureFormat.ToString());
 
             new SkiaPngWriter().SaveRgbaAsPng(
                 rawImageBytes,

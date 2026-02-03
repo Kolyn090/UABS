@@ -5,14 +5,12 @@ namespace UABS.AvaloniaUI
 {
     public static class ToAvaloniaPixelFormat
     {
-        public static PixelFormat Convert(ImagePixelFormat format)
+        public static PixelFormat Convert(UnityTextureFormat format)
         {
             return format switch
             {
-                ImagePixelFormat.Unknown      => PixelFormat.Bgra8888,
-                ImagePixelFormat.BGRA32       => PixelFormat.Bgra8888,
-                ImagePixelFormat.RGBA32       => PixelFormat.Rgba8888,
-                ImagePixelFormat.Grayscale8   => PixelFormats.Gray8,
+                UnityTextureFormat.BGRA32       => PixelFormat.Bgra8888,
+                UnityTextureFormat.RGBA32       => PixelFormat.Rgba8888,
                 _ => PixelFormat.Bgra8888      // default fallback
             };
         }

@@ -9,18 +9,18 @@ namespace UABS.Wrapper
 
         public int Height { get; }
 
-        public ImagePixelFormat ImagePixelFormat { get; }
+        public UnityTextureFormat UnityTextureFormat { get; }
 
         public byte[] RawImageBytes { get; }
 
         public CommonImageResource(int width,
                                     int height,
-                                    ImagePixelFormat imagePixelFormat,
+                                    UnityTextureFormat unityTextureFormat,
                                     byte[] rawPixelData)
         {
             Width = width;
             Height = height;
-            ImagePixelFormat = imagePixelFormat;
+            UnityTextureFormat = unityTextureFormat;
             RawImageBytes = rawPixelData;
         }
     }

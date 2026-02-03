@@ -22,7 +22,7 @@ namespace UABS.AvaloniaUI
             var writeableBitmap = new WriteableBitmap(
                 new PixelSize(Width, Height),
                 new Vector(96, 96),
-                ToAvaloniaPixelFormat.Convert(ImagePixelFormat)
+                ToAvaloniaPixelFormat.Convert(UnityTextureFormat)
             );
 
             using (var fb = writeableBitmap.Lock())
@@ -37,20 +37,20 @@ namespace UABS.AvaloniaUI
         public int Width => Bitmap.PixelSize.Width;
         public int Height => Bitmap.PixelSize.Height;
 
-        public ImagePixelFormat ImagePixelFormat
+        public UnityTextureFormat UnityTextureFormat
         {
             get
             {
                 if (Bitmap == null)
-                    return ImagePixelFormat.Unknown;
+                    return UnityTextureFormat.RGBA32;
 
                 if (Bitmap.Format.Equals(PixelFormat.Rgba8888))
-                    return ImagePixelFormat.RGBA32;
+                    return UnityTextureFormat.RGBA32;
 
                 if (Bitmap.Format.Equals(PixelFormat.Bgra8888))
-                    return ImagePixelFormat.BGRA32;
+                    return UnityTextureFormat.BGRA32;
 
-                return ImagePixelFormat.Unknown;
+                return UnityTextureFormat.RGBA32;
             }
         }
 

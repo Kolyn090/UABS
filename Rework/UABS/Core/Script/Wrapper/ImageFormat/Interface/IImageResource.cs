@@ -4,7 +4,7 @@ namespace UABS.Wrapper
     {
         int Width { get; }
         int Height { get; }
-        ImagePixelFormat ImagePixelFormat { get; }
+        UnityTextureFormat UnityTextureFormat { get; }
         byte[] RawImageBytes { get; }
     }
 }

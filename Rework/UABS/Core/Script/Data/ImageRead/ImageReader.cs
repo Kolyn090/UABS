@@ -209,7 +209,7 @@ namespace UABS.Data
             int width = texBase["m_Width"].AsInt;
             int height = texBase["m_Height"].AsInt;
             int format = texBase["m_TextureFormat"].AsInt;
-            ImagePixelFormat imagePixelFormat = ToImagePixelFormat.Convert(format);
+            UnityTextureFormat unityTextureFormat = (UnityTextureFormat) format;
 
             if (_currAssetsInst is not {} currFileInst)
             {
@@ -227,25 +227,25 @@ namespace UABS.Data
             {
                 ImageAssetEntry imageAssetEntry = ImageAssetEntry.ConvertToImageAssetEntry(assetEntry);
                 imageAssetEntry.ImageRect = cropRect ?? new(0, 0, width, height);
-                imageAssetEntry.Image = new CommonImageResource(width, height, imagePixelFormat, bytes);
+                imageAssetEntry.Image = new CommonImageResource(width, height, unityTextureFormat, bytes);
 
                 return imageAssetEntry;
             }
 
-            if (IsSupportedFormat(imagePixelFormat, out TextureCompressionFormat compressFormat))
+            if (IsSupportedFormat(unityTextureFormat, out TextureCompressionFormat compressFormat))
             {
                 byte[] bytes = _textureDecoder.DecodeToBytes(imageBytes, width, height, compressFormat);
                 return LoadImage(bytes);
             }
-            else if (IsAndroidFormat(imagePixelFormat))
+            else if (IsAndroidFormat(unityTextureFormat))
             {
                 
             }
-            else if (IsAstcFormat(imagePixelFormat))
+            else if (IsAstcFormat(unityTextureFormat))
             {
                 
             }
-            else if (imagePixelFormat == ImagePixelFormat.Alpha8)
+            else if (unityTextureFormat == UnityTextureFormat.Alpha8)
             {
                 int pixels = width * height;
                 byte[] rgbaBytes = new byte[pixels * 4];
@@ -268,31 +268,65 @@ namespace UABS.Data
             return null;
         }
 
-        private bool IsSupportedFormat(ImagePixelFormat format, 
+        private bool IsSupportedFormat(UnityTextureFormat format, 
                                         out TextureCompressionFormat compressionFormat)
         {
             switch (format)
             {
-                case ImagePixelFormat.Unknown:
-                case ImagePixelFormat.RGBA32:
-                case ImagePixelFormat.BGRA32:
+                // Uncompressed 8-bit/channel formats
+                case UnityTextureFormat.RGBA32:
+                case UnityTextureFormat.ARGB32:
+                case UnityTextureFormat.BGRA32:
                     compressionFormat = TextureCompressionFormat.Rgba;
                     return true;
-                case ImagePixelFormat.Grayscale8:
+
+                case UnityTextureFormat.RGB24:
+                    compressionFormat = TextureCompressionFormat.Rgb;
+                    return true;
+
+                case UnityTextureFormat.R8:
                     compressionFormat = TextureCompressionFormat.R;
                     return true;
+
+                case UnityTextureFormat.R16:
+                    compressionFormat = TextureCompressionFormat.Rg;
+                    return true;
+
+                // BCn (DXT) compressed formats
+                case UnityTextureFormat.DXT1:
+                case UnityTextureFormat.BC4:
+                    compressionFormat = TextureCompressionFormat.Bc1;
+                    return true;
+
+                case UnityTextureFormat.DXT5:
+                    compressionFormat = TextureCompressionFormat.Bc3;
+                    return true;
+
+                case UnityTextureFormat.BC5:
+                    compressionFormat = TextureCompressionFormat.Bc5;
+                    return true;
+
+                case UnityTextureFormat.BC6H:
+                    compressionFormat = TextureCompressionFormat.Bc6U;
+                    return true;
+
+                case UnityTextureFormat.BC7:
+                    compressionFormat = TextureCompressionFormat.Bc7;
+                    return true;
+
+                // Fallback/default
                 default:
-                    compressionFormat = TextureCompressionFormat.Rgba;
+                    compressionFormat = default;
                     return false;
             }
         }
 
-        private bool IsAndroidFormat(ImagePixelFormat format)
+        private bool IsAndroidFormat(UnityTextureFormat format)
         {
             return false;
         }
 
-        private bool IsAstcFormat(ImagePixelFormat format)
+        private bool IsAstcFormat(UnityTextureFormat format)
         {
             return false;
         }
