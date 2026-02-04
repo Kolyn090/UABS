@@ -17,13 +17,16 @@ namespace UABS.Wrapper
             }
 
             int bpp = 4; // Always render in RGBA32
-            int expectedSize = source.Width * source.Height * bpp;
-            if (source.RawImageBytes.Length < expectedSize)
+            checked
             {
-                Log.Error($"InvalidOperationException: RawImageBytes too small. Expected at least {expectedSize}, actual {source.RawImageBytes.Length}");
-                throw new InvalidOperationException(
-                    $"RawImageBytes too small. Expected at least {expectedSize}, " +
-                    $"actual {source.RawImageBytes.Length}");
+                int expectedSize = source.Width * source.Height * bpp;
+                if (source.RawImageBytes.Length < expectedSize)
+                {
+                    Log.Error($"InvalidOperationException: RawImageBytes too small. Expected at least {expectedSize}, actual {source.RawImageBytes.Length}");
+                    throw new InvalidOperationException(
+                        $"RawImageBytes too small. Expected at least {expectedSize}, " +
+                        $"actual {source.RawImageBytes.Length}");
+                }
             }
 
             // int srcStride = source.Width * bpp;

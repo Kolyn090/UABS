@@ -74,9 +74,9 @@ namespace UABS.Data
                     return -1;
                 }
 
-                for (int i = 0; i < _currSpriteDumps.Count; i++)
+                for (int i = 0; i < currSpriteDumps.Count; i++)
                 {
-                    long infoPathID = _currSpriteDumps[i].pathID;
+                    long infoPathID = currSpriteDumps[i].pathID;
                     if (infoPathID == pathID) return i;
                 }
 
