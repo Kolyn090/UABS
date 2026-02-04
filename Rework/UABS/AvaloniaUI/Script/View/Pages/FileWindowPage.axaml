@@ -156,26 +156,15 @@
                     <TextBlock Text="45 / 100" FontWeight="Bold" VerticalAlignment="Center"/>
                     <Button Content="▶" Width="28" Height="28"/>
                 </StackPanel>
-
-                <!-- Asset Preview Row -->
-                <Grid Grid.Row="1">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-
-                    <TextBlock Grid.Row="0" Text="32x26 (RGBA32)" HorizontalAlignment="Center"/>
-
-                    <Border Grid.Row="1"
-                            BorderBrush="#444"
-                            BorderThickness="1"
-                            CornerRadius="4"
-                            Padding="6"
-                            HorizontalAlignment="Stretch"
-                            Height="300">
-                        <ContentControl Content="{Binding AssetPreview}" HorizontalAlignment="Stretch"/>
-                    </Border>
-                </Grid>
+                <Border Grid.Row="1"
+                        BorderBrush="#444"
+                        BorderThickness="1"
+                        CornerRadius="4"
+                        Padding="6"
+                        HorizontalAlignment="Stretch"
+                        Height="300">
+                    <ContentControl Content="{Binding AssetPreview}" HorizontalAlignment="Stretch"/>
+                </Border>
             </Grid>
 
         </Grid>

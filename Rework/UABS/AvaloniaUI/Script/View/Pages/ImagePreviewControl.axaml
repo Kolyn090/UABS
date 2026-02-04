@@ -11,22 +11,42 @@
     </UserControl.Resources>
 
     <Grid>
-        <!-- Background -->
-        <Image Source="avares://AvaloniaUI/Resources/Images/transparent_bg_8x8.png"
-            Stretch="UniformToFill"
-            RenderOptions.BitmapInterpolationMode="None"/>
-
-        <!-- Foreground with pan & zoom -->
-        <Border ClipToBounds="True">
-            <Canvas x:Name="ForegroundCanvas">
-                <Image x:Name="ForegroundImage"
-                    Source="{Binding ImageResource, Converter={StaticResource RawImageConverter}}"
-                    RenderOptions.BitmapInterpolationMode="None"
+        <Grid Grid.Row="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0"
                     HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Stretch="Uniform"/>
-            </Canvas>
-        </Border>
+                    Margin="0,0,0,5">
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{}{0}x{1} ({2})">
+                        <Binding Path="Width"/>
+                        <Binding Path="Height"/>
+                        <Binding Path="UnityTextureFormat"/>
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
+
+            <Grid Grid.Row="1">
+                <!-- Background -->
+                <Image Source="avares://AvaloniaUI/Resources/Images/transparent_bg_8x8.png"
+                    Stretch="UniformToFill"
+                    RenderOptions.BitmapInterpolationMode="None"/>
+
+                <!-- Foreground with pan & zoom -->
+                <Border ClipToBounds="True">
+                    <Canvas x:Name="ForegroundCanvas">
+                        <Image x:Name="ForegroundImage"
+                            Source="{Binding ImageResource, Converter={StaticResource RawImageConverter}}"
+                            RenderOptions.BitmapInterpolationMode="None"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Stretch="Uniform"/>
+                    </Canvas>
+                </Border>
+            </Grid>
+        </Grid>
     </Grid>
 
 </UserControl>
