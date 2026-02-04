@@ -16,13 +16,7 @@ namespace UABS.Wrapper
                 throw new ArgumentOutOfRangeException(nameof(rect), "Crop rect out of bounds");
             }
 
-            int bpp = GetBytesPerPixel(source.UnityTextureFormat);
-            if (bpp == 1)
-            {
-                // TODO: Fix this
-                return source;
-            }
-
+            int bpp = 4; // Always render in RGBA32
             int expectedSize = source.Width * source.Height * bpp;
             if (source.RawImageBytes.Length < expectedSize)
             {
@@ -60,13 +54,5 @@ namespace UABS.Wrapper
                 source.UnityTextureFormat,
                 dstPixels);
         }
-
-        private static int GetBytesPerPixel(UnityTextureFormat format) =>
-            format switch
-        {
-            UnityTextureFormat.RGBA32 => 4,
-            UnityTextureFormat.BGRA32 => 4,
-            _ => 1
-        };
     }
 }

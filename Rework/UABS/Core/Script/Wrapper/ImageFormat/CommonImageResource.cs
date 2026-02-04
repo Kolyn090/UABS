@@ -1,6 +1,3 @@
-using System;
-using UABS.Util;
-
 namespace UABS.Wrapper
 {
     public class CommonImageResource : IImageResource

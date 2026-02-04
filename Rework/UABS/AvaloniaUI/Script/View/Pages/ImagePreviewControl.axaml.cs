@@ -11,7 +11,7 @@ namespace UABS.AvaloniaUI
         private Avalonia.Point _lastPointer;
         private bool _isDragging = false;
         private double _scale = 10;
-        private const double MinScale = 5;
+        private const double MinScale = 0.1;
         private const double MaxScale = 100.0;
 
         public ImagePreviewControl()

@@ -5,6 +5,6 @@ namespace UABS.Wrapper
         int Width { get; }
         int Height { get; }
         UnityTextureFormat UnityTextureFormat { get; }
-        byte[] RawImageBytes { get; }
+        byte[] RawImageBytes { get; }  // This is only for display, always RGBA32
     }
 }

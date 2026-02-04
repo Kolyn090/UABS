@@ -33,24 +33,12 @@ namespace UABS.AvaloniaUI
                 return null;
             }
 
-            return img.UnityTextureFormat switch
-            {
-                UnityTextureFormat.RGBA32 => CreateBitmap(
-                    ToAvaloniaPixelFormat.Convert(UnityTextureFormat.RGBA32),
+            return CreateBitmap(
+                    PixelFormat.Rgba8888,
                     img.Width,
                     img.Height,
                     FlipVertically(img.RawImageBytes, img.Width, img.Height, 4),
-                    img.Width * 4),
-
-                UnityTextureFormat.BGRA32 => CreateBitmap(
-                    PixelFormat.Bgra8888,
-                    img.Width,
-                    img.Height,
-                    FlipVertically(img.RawImageBytes, img.Width, img.Height, 4),
-                    img.Width * 4),
-
-                _ => null
-            };
+                    img.Width * 4);
         }
 
         public object ConvertBack(

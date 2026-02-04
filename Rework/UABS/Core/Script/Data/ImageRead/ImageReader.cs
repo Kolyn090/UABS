@@ -25,6 +25,9 @@ namespace UABS.Data
             _assetsManager = assetsManager;
             _dumpReader = new(_assetsManager);
             _textureDecoder = textureDecoder;
+            string astcDllPath = @"..\..\..\..\Libs\astc_decoder.dll";
+            NativeLoader.Load(astcDllPath);
+            Log.Info($"Loaded Astc decoder from {astcDllPath}");
         }
 
         public ImageAssetEntry? SpriteToImage(AssetEntry assetEntry)
@@ -232,18 +235,43 @@ namespace UABS.Data
                 return imageAssetEntry;
             }
 
-            if (IsSupportedFormat(unityTextureFormat, out TextureCompressionFormat compressFormat))
+            if (unityTextureFormat.SupportedCompression() is {} compressionFormat)
             {
-                byte[] bytes = _textureDecoder.DecodeToBytes(imageBytes, width, height, compressFormat);
+                byte[] bytes = _textureDecoder.DecodeToBytes(imageBytes, width, height, compressionFormat);
                 return LoadImage(bytes);
             }
-            else if (IsAndroidFormat(unityTextureFormat))
+            else if (unityTextureFormat.IsAndroid())
             {
-                
+                // TODO: Add ETC/unity crunched decoder
             }
-            else if (IsAstcFormat(unityTextureFormat))
+            else if (unityTextureFormat.IsAstc())
             {
-                
+                byte[] rgbaBytes = new byte[width * height * 4];
+                try
+                {
+                    (int blockX, int blockY) = GetBlock((UnityTextureFormat)format);
+                    if (blockX == -1)
+                    {
+                        Log.Error($"Unsupported ASTC format: {(UnityTextureFormat)format}");
+                        return null;
+                    }
+                    bool result = AstcDecoderNative.DecodeASTC(imageBytes, imageBytes.Length, width, height, rgbaBytes, blockX, blockY);
+                    if (result) // assuming 0 means success
+                    {
+                        Log.Info("ASTC decode succeeded and texture applied.");
+                        return LoadImage(rgbaBytes);
+                    }
+                    else
+                    {
+                        Log.Error("ASTC decode failed with error code " + result);
+                        return null;
+                    }
+                }
+                catch
+                {
+                    Log.Error("Something went wrong with ASTC decoder dll. Make sure your build work.");
+                    return null;
+                }
             }
             else if (unityTextureFormat == UnityTextureFormat.Alpha8)
             {
@@ -268,67 +296,18 @@ namespace UABS.Data
             return null;
         }
 
-        private bool IsSupportedFormat(UnityTextureFormat format, 
-                                        out TextureCompressionFormat compressionFormat)
+        private (int, int) GetBlock(UnityTextureFormat astcFormat)
         {
-            switch (format)
+            return astcFormat switch
             {
-                // Uncompressed 8-bit/channel formats
-                case UnityTextureFormat.RGBA32:
-                case UnityTextureFormat.ARGB32:
-                case UnityTextureFormat.BGRA32:
-                    compressionFormat = TextureCompressionFormat.Rgba;
-                    return true;
-
-                case UnityTextureFormat.RGB24:
-                    compressionFormat = TextureCompressionFormat.Rgb;
-                    return true;
-
-                case UnityTextureFormat.R8:
-                    compressionFormat = TextureCompressionFormat.R;
-                    return true;
-
-                case UnityTextureFormat.R16:
-                    compressionFormat = TextureCompressionFormat.Rg;
-                    return true;
-
-                // BCn (DXT) compressed formats
-                case UnityTextureFormat.DXT1:
-                case UnityTextureFormat.BC4:
-                    compressionFormat = TextureCompressionFormat.Bc1;
-                    return true;
-
-                case UnityTextureFormat.DXT5:
-                    compressionFormat = TextureCompressionFormat.Bc3;
-                    return true;
-
-                case UnityTextureFormat.BC5:
-                    compressionFormat = TextureCompressionFormat.Bc5;
-                    return true;
-
-                case UnityTextureFormat.BC6H:
-                    compressionFormat = TextureCompressionFormat.Bc6U;
-                    return true;
-
-                case UnityTextureFormat.BC7:
-                    compressionFormat = TextureCompressionFormat.Bc7;
-                    return true;
-
-                // Fallback/default
-                default:
-                    compressionFormat = default;
-                    return false;
-            }
-        }
-
-        private bool IsAndroidFormat(UnityTextureFormat format)
-        {
-            return false;
-        }
-
-        private bool IsAstcFormat(UnityTextureFormat format)
-        {
-            return false;
+                UnityTextureFormat.ASTC_4x4 or UnityTextureFormat.ASTC_HDR_4x4 => (4, 4),
+                UnityTextureFormat.ASTC_5x5 or UnityTextureFormat.ASTC_HDR_5x5 => (5, 5),
+                UnityTextureFormat.ASTC_6x6 or UnityTextureFormat.ASTC_HDR_6x6 => (6, 6),
+                UnityTextureFormat.ASTC_8x8 or UnityTextureFormat.ASTC_HDR_8x8 => (8, 8),
+                UnityTextureFormat.ASTC_10x10 or UnityTextureFormat.ASTC_HDR_10x10 => (10, 10),
+                UnityTextureFormat.ASTC_12x12 or UnityTextureFormat.ASTC_HDR_12x12 => (12, 12),
+                _ => (-1, -1),
+            };
         }
 
         private static byte[]? GetImageData(AssetTypeValueField texField, 

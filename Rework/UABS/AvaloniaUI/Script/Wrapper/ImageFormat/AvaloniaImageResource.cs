@@ -22,7 +22,7 @@ namespace UABS.AvaloniaUI
             var writeableBitmap = new WriteableBitmap(
                 new PixelSize(Width, Height),
                 new Vector(96, 96),
-                ToAvaloniaPixelFormat.Convert(UnityTextureFormat)
+                PixelFormat.Rgba8888
             );
 
             using (var fb = writeableBitmap.Lock())
